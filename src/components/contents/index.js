@@ -10,7 +10,8 @@ class Content extends React.Component {
         this.state = {
             offSet: 0,
             pageSize: 20,
-            data: []
+            dataFirst: [],
+            dataAfter: []
         }
     }
 
@@ -23,29 +24,46 @@ class Content extends React.Component {
         const queryParams = queryString.stringify({ offSet, pageSize })
         instance.get(`Manager/GetServices?${queryParams}`).then(res => {
             const {data} = res.data;
-            this.setState({data})
+            this.setState({dataFirst: [data[0]], dataAfter: data.filter((v, i) => i !== 0)})
         })
     }
 
     render() {
+        console.log(this.state)
         return <Container>
-            <Row>
-                {
-                    this.state.data.map(d => 
-                        <Col lg={12} sm={12} md={12}>
+            <div className="section">
+                <Row>
+                    <Col>
+                        <h3>Dịch vụ</h3>
+                    </Col>
+                </Row>
+                <Row>
+                    {
+                        this.state.dataFirst.map((d, id) => 
+                        <Col key={id} sm={12} md={6} lg={6}>
+                            <div className="content">
+                                <img src={d?.url} alt="" width="100%" />
+                                <h5>{d?.name}</h5>
+                            </div>
+
+                         </Col>)
+                    }
+
+                        <Col sm={12} md={6} lg={6}>
+                            
                             <Row>
-                                <Col sm={4} md={4}>
-                                    <div className="content">
-                                        <img src={d.url} width="100%"/>
-                                    </div>
-                                </Col>
-                                <Col sm={8} md={8}>
-                                    <h5>{d.name}</h5>
-                                </Col>
+                                {
+                                    this.state.dataAfter.map((d, id) => <Col sm={12} md={6} lg={6}>
+                                    <img src={d?.url} alt="" width="100%" height="200px" />
+                                    <h5>{d?.name}</h5>
+                                </Col>)
+                                }
                             </Row>
-                        </Col>)
-                }
-            </Row>
+                            
+                        </Col>
+
+                </Row>
+            </div>
         </Container>
     }
 }

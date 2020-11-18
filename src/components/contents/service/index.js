@@ -16,7 +16,7 @@ class Services extends React.Component {
     render() {
         return <Container>
             <Row>
-                <Col>
+                <Col className="text-right">
                     <Button variant="primary" onClick={this.addPost.bind(this)}>
                         <FontAwesomeIcon icon={faPlus} />
                     </Button>
