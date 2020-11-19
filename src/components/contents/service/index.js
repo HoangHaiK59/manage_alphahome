@@ -15,8 +15,8 @@ class Services extends React.Component {
 
     render() {
         return <Container>
-            <Row>
-                <Col className="text-right">
+            <Row style={{backgroundColor: '#5b94ba', height: '50px'}}>
+                <Col className="text-center">
                     <Button variant="primary" onClick={this.addPost.bind(this)}>
                         <FontAwesomeIcon icon={faPlus} />
                     </Button>

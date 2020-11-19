@@ -10,21 +10,20 @@ class Content extends React.Component {
         this.state = {
             offSet: 0,
             pageSize: 20,
-            dataFirst: [],
-            dataAfter: []
+            data: null
         }
     }
 
     componentDidMount() {
-        this.getServices();
+        this.getManagerPage();
     }
 
-    getServices() {
+    getManagerPage() {
         const { offSet, pageSize } = this.state;
         const queryParams = queryString.stringify({ offSet, pageSize })
-        instance.get(`Manager/GetServices?${queryParams}`).then(res => {
-            const {data} = res.data;
-            this.setState({dataFirst: [data[0]], dataAfter: data.filter((v, i) => i !== 0)})
+        instance.get(`Manager/GetManagerPage?${queryParams}`).then(res => {
+            const { data } = res.data;
+            this.setState({ data })
         })
     }
 
@@ -39,7 +38,7 @@ class Content extends React.Component {
                 </Row>
                 <Row>
                     {
-                        this.state.dataFirst.map((d, id) => 
+                        this.state.data?.services.filter((v, i) => i === 0).map((d, id) => 
                         <Col key={id} sm={12} md={6} lg={6}>
                             <div className="content">
                                 <img src={d?.url} alt="" width="100%" />
@@ -53,7 +52,41 @@ class Content extends React.Component {
                             
                             <Row>
                                 {
-                                    this.state.dataAfter.map((d, id) => <Col sm={12} md={6} lg={6}>
+                                    this.state.data?.services.filter((v, i) => i !== 0).map((d, id) => <Col key={id} sm={12} md={6} lg={6}>
+                                    <img src={d?.url} alt="" width="100%" height="200px" />
+                                    <h5>{d?.name}</h5>
+                                </Col>)
+                                }
+                            </Row>
+                            
+                        </Col>
+
+                </Row>
+            </div>
+
+            <div className="section">
+                <Row>
+                    <Col>
+                        <h3>Dự án</h3>
+                    </Col>
+                </Row>
+                <Row>
+                    {
+                        this.state.data?.projects.filter((v, i) => i === 0).map((d, id) => 
+                        <Col key={id} sm={12} md={6} lg={6}>
+                            <div className="content">
+                                <img src={d?.url} alt="" width="100%" />
+                                <h5>{d?.name}</h5>
+                            </div>
+
+                         </Col>)
+                    }
+
+                        <Col sm={12} md={6} lg={6}>
+                            
+                            <Row>
+                                {
+                                    this.state.data?.projects.filter((v, i) => i !== 0).map((d, id) => <Col key={id} sm={12} md={6} lg={6}>
                                     <img src={d?.url} alt="" width="100%" height="200px" />
                                     <h5>{d?.name}</h5>
                                 </Col>)
