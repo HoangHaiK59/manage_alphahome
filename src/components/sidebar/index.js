@@ -1,39 +1,37 @@
 import React from 'react';
 import { withRouter } from 'react-router';
-import { Nav, Navbar } from 'react-bootstrap';
+import { Nav } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faHome, faNewspaper, faUser, faPager } from '@fortawesome/free-solid-svg-icons';
 import '../../sidebar.scss';
 
 class SidebarElement extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
+        this.state = {
+
+        }
     }
     render() {
         return (
-            <div id="sidebar-menu" className='sideBarMenuContainer'>
-                <Navbar fluid className='sidebar' inverse >
-
-                    <Navbar.Header>
-                        <Navbar.Brand>
-                            <a href="/">User Name</a>
-                        </Navbar.Brand>
-                        <Navbar.Toggle />
-                    </Navbar.Header>
-
-                    <Navbar.Collapse>
-                        <Navbar.Text className='userMenu'>
-                            <Navbar.Link href="#"><FontAwesomeIcon icon={faPlus}/></Navbar.Link>
-                            <Navbar.Link href="#"><FontAwesomeIcon icon={faPlus}/></Navbar.Link>
-                        </Navbar.Text>
-                        <Nav>
-                            {/* <NavItem eventKey={2}>Item 2</NavItem>
-                            <NavItem eventKey={3}>Item 3</NavItem> */}
-                        </Nav>
-                    </Navbar.Collapse>
-
-                </Navbar>
-            </div>
+            <nav className="col-md-1 d-none d-md-block bg-light sidebar">
+                <div className="sidebar-sticky">
+                    <ul className="nav flex-column">
+                        <li className="nav-item">
+                            <a className='nav-link active' href="/"><FontAwesomeIcon className="mr-2" icon={faHome} />Home</a>
+                        </li>
+                        <li className="nav-item">
+                            <a className='nav-link' href="/"><FontAwesomeIcon className="mr-2" icon={faUser} />Dịch vụ</a>
+                        </li>
+                        <li className="nav-item">
+                            <a className='nav-link' href="/"><FontAwesomeIcon className="mr-2" icon={faPager} />Dự án</a>
+                        </li>
+                        <li className="nav-item">
+                            <a className='nav-link' href="/"><FontAwesomeIcon className="mr-2" icon={faNewspaper} />Tin tức</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
         )
     }
 }

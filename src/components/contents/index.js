@@ -28,8 +28,7 @@ class Content extends React.Component {
     }
 
     render() {
-        console.log(this.state)
-        return <Container>
+        return <Container fluid>
             <div className="section">
                 <Row>
                     <Col>
@@ -53,7 +52,7 @@ class Content extends React.Component {
                             <Row>
                                 {
                                     this.state.data?.services.filter((v, i) => i !== 0).map((d, id) => <Col key={id} sm={12} md={6} lg={6}>
-                                    <img src={d?.url} alt="" width="100%" height="200px" />
+                                    <img src={d?.url} alt="" width="100%" height="235px" />
                                     <h5>{d?.name}</h5>
                                 </Col>)
                                 }
@@ -87,7 +86,7 @@ class Content extends React.Component {
                             <Row>
                                 {
                                     this.state.data?.projects.filter((v, i) => i !== 0).map((d, id) => <Col key={id} sm={12} md={6} lg={6}>
-                                    <img src={d?.url} alt="" width="100%" height="200px" />
+                                    <img src={d?.url} alt="" width="100%" height="235px" />
                                     <h5>{d?.name}</h5>
                                 </Col>)
                                 }

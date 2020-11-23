@@ -12,6 +12,9 @@ code {
     monospace;
 }
 
-.main-bg {
+/* .main-bg {
   background-color: #1b2c4a !important;
+} */
+.bg-light {
+  background-color: #fff !important;
 }
