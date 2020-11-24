@@ -6,7 +6,9 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons'
 class News extends React.Component {
     constructor(props) {
         super(props);
-
+        this.state = {
+            
+        }
     }
 
     addPost() {

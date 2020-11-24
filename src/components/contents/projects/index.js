@@ -7,7 +7,7 @@ import { withRouter } from 'react-router';
 import { instance } from '../../../helper/axios';
 import * as queryString from 'querystring';
 import '../custom.scss';
-class Services extends React.Component {
+class Projects extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -18,17 +18,17 @@ class Services extends React.Component {
     }
 
     componentDidMount() {
-        this.getServices();
+        this.getProjects();
     }
 
     addPost() {
         this.props.history.push('services/new-post')
     }
 
-    getServices() {
+    getProjects() {
         const { offSet, pageSize } = this.state;
         const queryParams = queryString.stringify({offSet, pageSize});
-        instance.get(`Manager/GetServices?${queryParams}`).then(res => {
+        instance.get(`Manager/GetProjectPage?${queryParams}`).then(res => {
             const result = res.data;
             if(result.status === 'success') {
                 this.setState({data: result.data})
@@ -52,15 +52,12 @@ class Services extends React.Component {
                     <input type="checkbox" />
                 </Col>
                 <Col sm={1} md={1} lg={1} xs={1}><h5>Ảnh</h5></Col>
-                <Col sm={5} md={5} lg={5} xs={2}>
+                <Col sm={7} md={7} lg={7} xs={2}>
                     <Row>
                         <Col>
                             <h5>Tên</h5>
                         </Col>
                     </Row>
-                </Col>
-                <Col sm={2} md={2} lg={2} xs={2}>
-                    <h5>Loại</h5>
                 </Col>
                 <Col sm={1} md={1} lg={1} xs={3}><h5>Lượt xem</h5></Col>
                 <Col sm={1} md={1} lg={1} xs={1}><h5>Action</h5></Col>
@@ -75,7 +72,7 @@ class Services extends React.Component {
                             <Col sm={1} md={1} lg={1} className="cover">
                                 <img src={d?.url} style={{width: '100%', height: '100%'}} alt=""/>
                             </Col>
-                            <Col sm={5} md={5} lg={5}>
+                            <Col sm={7} md={7} lg={7}>
                                 <Row>
                                     <Col md={12} lg={12}>
                                         <span>{d?.name}</span>
@@ -84,9 +81,6 @@ class Services extends React.Component {
                                         <span>{d?.description}</span>
                                     </Col>
                                 </Row>
-                            </Col>
-                            <Col sm={2} md={2} lg={2}>
-                                <span className="category">{d?.serviceTypeName}</span>
                             </Col>
                             <Col sm={1} md={1} lg={1}>
                                 <span>{d?.view}</span>
@@ -105,4 +99,4 @@ class Services extends React.Component {
     }
 }
 
-export default withRouter(Services);
+export default withRouter(Projects);

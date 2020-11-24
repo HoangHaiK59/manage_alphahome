@@ -3,6 +3,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Container } from 'react-bootstrap';
 import { Form, Button } from 'react-bootstrap';
+import { instance } from '../../../../helper/axios';
 
 export default class FormService extends React.Component {
     constructor(props) {
@@ -21,6 +22,13 @@ export default class FormService extends React.Component {
         console.log(this.state)
     }
 
+    componentDidMount() {
+        // const imageElem = document.getElementById("cover");
+        // imageElem.addEventListener('change', e => {
+        //     console.log(e)
+        // }, false)
+    }
+
     handleChange(key, e) {
         if(key === 'name') {
             this.setState({name: e.target.value})
@@ -33,22 +41,58 @@ export default class FormService extends React.Component {
         }
     }
 
+    handleUpload(e) {
+        console.log(e.target.files[0])
+        const formData = new FormData();
+        formData.append('formFile', e.target.files[0])
+        instance.post('Upload/UploadImage', formData)
+        .then(res => {
+            if(res.data.status === 'success') {
+                alert('Upload success')
+            } else {
+                alert('Upload error')
+            }
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
+    handleUploadMulti(e) {
+        console.log(e.target.files);
+        const formData = new FormData();
+        const fileList = [...e.target.files];
+        console.log(fileList);
+        formData.append('formFiles', fileList)
+        instance.post('Upload/UploadMultiImage', formData)
+        .then(res => {
+            if(res.data.status === 'success') {
+                alert('Upload success')
+            } else {
+                alert('Upload error')
+            }
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
     render() {
         return (
             <Container>
               <Form>
-                <Form.Group controlId="formBasicEmail">
+                <Form.Group>
                     <Form.Label>Tiêu đề</Form.Label>
-                    <Form.Control placeholder="Nhập tiêu đề" onChange={(event) => this.handleChange('name', event)}/>
+                    <Form.Control id="name" placeholder="Nhập tiêu đề" onChange={(event) => this.handleChange('name', event)}/>
                     {/* <Form.Text className="text-muted">
                     We'll never share your email with anyone else.
                     </Form.Text> */}
                     <Form.Label>Mô tả</Form.Label>
-                    <Form.Control as="textarea" placeholder="Nhập mô tả" multiple onChange={(event) => this.handleChange('description', event)}/>
+                    <Form.Control id="description" as="textarea" placeholder="Nhập mô tả" multiple onChange={(event) => this.handleChange('description', event)}/>
                     <Form.Label>Ảnh cover</Form.Label>
-                    <Form.Control placeholder="Ảnh cover" onChange={(event) => this.handleChange('url', event)}/>
+                    <Form.File id="cover" onChange={e => this.handleUpload(e)} accept="image/*"/>
                     <Form.Label>Danh sách link ảnh</Form.Label>
-                    <Form.Control as="textarea" placeholder="Danh sách link ảnh" multiple onChange={(event) => this.handleChange('imagesText', event)}/>
+                    <Form.File id="images" onChange={e => this.handleUploadMulti(e)} multiple accept="image/*"/>
                 </Form.Group>
 
                 <CKEditor controlId="formBasicEditor"

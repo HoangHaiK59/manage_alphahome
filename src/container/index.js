@@ -1,4 +1,4 @@
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row } from 'react-bootstrap';
 import NavbarElement from '../components/navbar';
 import { Route, Switch } from 'react-router-dom';
 import Services from '../components/contents/service';
@@ -7,6 +7,7 @@ import Content from '../components/contents';
 import FormService from '../components/contents/service/form';
 import FormPost from '../components/contents/news/form';
 import SidebarElement from '../components/sidebar';
+import  Projects from '../components/contents/projects';
 import './container.scss';
 
 const ContainerElement = (props) => {
@@ -20,6 +21,7 @@ const ContainerElement = (props) => {
                         <Switch>
                                 <Route exact path="/" render={(props) => <Content {...props} title="Home" />} />
                                 <Route exact path="/services" render={(props) => <Services {...props} title="Services" />} />
+                                <Route exact path="/projects" render={(props) => <Projects {...props} title="Projects" />} />
                                 <Route exact path="/services/new-post" render={(props) => <FormService {...props} title="Add new post services" />
                                 } />
                                 <Route exact path="/news" render={(props) => <News {...props} title="Services" />} />

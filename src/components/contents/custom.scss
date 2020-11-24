@@ -1,0 +1,52 @@
+.item {
+    min-height: 120px;
+    max-height: 150px;
+    width: 100%;
+    padding-top: 10px;
+}
+
+.cover > img {
+    min-height: 80px;
+    max-height: 90px;
+}
+
+@mixin randomColor() {
+    background-color: rgb(random(230), random(100), random(235));
+}
+
+.category {
+    border-width: 1px;
+    background-color: rgb(190, 189, 105);
+    border: 1px;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.sticky-row {
+    position: sticky;
+    top: 40px;
+    z-index: 2;
+    background: white;
+    padding: 10px 0px;
+}
+
+@media (max-width: 576px) {
+    .item {
+        min-height: 460px;
+    }
+    .cover > img {
+        min-height: 200px;
+        max-height: 210px;
+    }
+    .category {
+        border-width: 1px;
+        // background-color: randomColor;
+        border: 1px;
+        border-radius: 5px;
+        padding: 5px;
+    }
+
+    .sticky-row {
+        padding: 10px 0px;
+    }
+}
