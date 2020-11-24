@@ -62,9 +62,10 @@ export default class FormService extends React.Component {
         console.log(e.target.files);
         const formData = new FormData();
         const fileList = [...e.target.files];
-        console.log(fileList);
-        formData.append('formFiles', fileList)
-        instance.post('Upload/UploadMultiImage', formData)
+        for(const file of fileList) {
+            formData.append('formFiles', file);
+        }
+        instance.post('Upload/UploadMultiImage', formData, {headers: {'content-type': 'multipart/form-data'}})
         .then(res => {
             if(res.data.status === 'success') {
                 alert('Upload success')
