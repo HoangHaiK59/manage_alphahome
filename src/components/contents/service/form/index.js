@@ -19,16 +19,19 @@ export default class FormService extends React.Component {
             serviceTypes: []
         }
         this.editor = null;
+        this.logEvent = this.logEvent.bind(this);
     }
 
     onSubmit() {
         // handle caption
-        console.log(this.editor.plugins.get("FileRepository"))
+        console.log(this.state.content);
         const regexCaption = new RegExp('<\s*figcaption[^>]*>(.*?)<\s*/\s*figcaption>', 'g');
-        const listCaption = this.editor.getData().match(regexCaption);
+        const regexImage = new RegExp('<img.*?src="(.*?)"')
+        console.log(this.state.content.match(regexImage))
+        const listCaption = this.state.content.match(regexCaption);
         let params = {...this.state};
         delete params.serviceTypes;
-        console.log()
+        //console.log(listCaption)
 
         console.log(viewToPlainText(this.editor.editing.view.document.getRoot()))
     }
@@ -106,6 +109,10 @@ export default class FormService extends React.Component {
     //     return true;
     // }
 
+    logEvent(event) {
+        console.log(event.data)
+    }
+
     render() {
         return (
             <Container>
@@ -155,6 +162,7 @@ export default class FormService extends React.Component {
                     // this.setState({content: data})
                     this.setState({content: editor.getData()})
                 } }
+                onSelectionChange={this.logEvent}
                 onBlur={ ( event, editor ) => {
                     console.log( 'Blur.', editor );
                 } }
