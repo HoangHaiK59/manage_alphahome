@@ -22,6 +22,14 @@ export default class FormService extends React.Component {
     }
 
     onSubmit() {
+        // handle caption
+        console.log(this.editor.plugins.get("FileRepository"))
+        const regexCaption = new RegExp('<\s*figcaption[^>]*>(.*?)<\s*/\s*figcaption>', 'g');
+        const listCaption = this.editor.getData().match(regexCaption);
+        let params = {...this.state};
+        delete params.serviceTypes;
+        console.log()
+
         console.log(viewToPlainText(this.editor.editing.view.document.getRoot()))
     }
 

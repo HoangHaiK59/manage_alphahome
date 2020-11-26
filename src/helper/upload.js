@@ -26,7 +26,7 @@ export class UploadAdapter {
               )
             },
           })
-            .then(({ data }) => ({ default: data.url }))
+            .then(({ data }) => ({ default: data.data }))
             .catch(({ error }) => Promise.reject(error?.message ?? genericError))
         })
       }
