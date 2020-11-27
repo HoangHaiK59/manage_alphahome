@@ -25,15 +25,37 @@ export default class FormService extends React.Component {
     onSubmit() {
         // handle caption
         console.log(this.state.content);
-        const regexCaption = new RegExp('<\s*figcaption[^>]*>(.*?)<\s*/\s*figcaption>', 'g');
-        const regexImage = new RegExp('<img.*?src="(.*?)"')
-        console.log(this.state.content.match(regexImage))
-        const listCaption = this.state.content.match(regexCaption);
-        let params = {...this.state};
+        const images = [];
+        const regexFigure = /<\s*figure[^>]*>(.*?)<\/*\s*figure>/g;
+        const regexCaption = new RegExp('<\\s*figcaption[^>]*>(.*?)<\\s*/\\s*figcaption>', 'g');
+        const regexImage = new RegExp('src\\s*=\\s*"(.+?)"', 'g');
+        // const regexGetTextCaption =  /<figcaption[^>]*>(.+?)<\/figcaption>/g;
+        const regexGetTag = />[^<]*</g;
+
+        const groupItem = this.state.content.match(regexFigure);
+        for(const gr of groupItem) {
+            const listImage = gr.match(regexImage);
+            const listCaption = gr.match(regexCaption);
+            const image = {
+                serviceId: 0,
+                content: listCaption ? listCaption[0].match(regexGetTag)[0].replace(/^>+/g,'').replace(/<+$/g,''): '',
+                url: listImage ? listImage[0].split('"')[1]: '',
+                serviceTypeId: this.state.serviceTypeId
+            }
+            images.push(image)
+        }
+
+        let params = {...this.state, images: JSON.stringify(images), content: viewToPlainText(this.editor.editing.view.document.getRoot())};
         delete params.serviceTypes;
+        console.log(params);
+        instance.post('Manager/SetService', params)
+        .then(res => {
+            console.log(res.data);
+        })
+        .catch(error => console.log(error))
         //console.log(listCaption)
 
-        console.log(viewToPlainText(this.editor.editing.view.document.getRoot()))
+        // console.log(viewToPlainText(this.editor.editing.view.document.getRoot()))
     }
 
     componentDidMount() {
@@ -60,7 +82,7 @@ export default class FormService extends React.Component {
         instance.get('Manager/GetServiceType').then(res => {
             if(res.data.status === 'success') {
                 const { data } = res.data;
-                this.setState({serviceTypes: data})
+                this.setState({serviceTypes: data , serviceTypeId: data[0].uid})
             }
         })
     }
@@ -133,8 +155,6 @@ export default class FormService extends React.Component {
                     </Form.Control>
                     <Form.Label>Ảnh cover</Form.Label>
                     <Form.File id="cover" onChange={e => this.handleUpload(e)} accept="image/*"/>
-                    <Form.Label>Danh sách link ảnh</Form.Label>
-                    <Form.File id="images" onChange={e => this.handleUploadMulti(e)} multiple accept="image/*"/>
                 </Form.Group>
 
                 <CKEditor controlId="formBasicEditor"
