@@ -23,6 +23,16 @@ class Content extends React.Component {
         const queryParams = queryString.stringify({ offSet, pageSize })
         instance.get(`Manager/GetManagerPage?${queryParams}`).then(res => {
             const { data } = res.data;
+            data.services.forEach(s => {
+                if(s.url.indexOf('https') === -1) {
+                    s.url = 'https://localhost:44352' + s.url;
+                }
+            });
+            data.projects.forEach(s => {
+                if(s.url.indexOf('https') === -1) {
+                    s.url = 'https://localhost:44352' + s.url;
+                }
+            });
             this.setState({ data })
         })
     }

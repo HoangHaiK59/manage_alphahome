@@ -14,7 +14,7 @@ export default class FormService extends React.Component {
             description: '',
             url: '',
             images: [],
-            content: '<p>Hello from CKEditor 5!</p>',
+            content: '',
             serviceTypeId: '',
             serviceTypes: []
         }
@@ -23,8 +23,6 @@ export default class FormService extends React.Component {
     }
 
     onSubmit() {
-        // handle caption
-        console.log(this.state.content);
         const images = [];
         const regexFigure = /<\s*figure[^>]*>(.*?)<\/*\s*figure>/g;
         const regexCaption = new RegExp('<\\s*figcaption[^>]*>(.*?)<\\s*/\\s*figcaption>', 'g');
@@ -39,20 +37,23 @@ export default class FormService extends React.Component {
             const image = {
                 serviceId: 0,
                 content: listCaption ? listCaption[0].match(regexGetTag)[0].replace(/^>+/g,'').replace(/<+$/g,''): '',
-                url: listImage ? listImage[0].split('"')[1]: '',
+                url: listImage ? listImage[0].split('"')[1].replace(/https:\/\/localhost:44352/g, ''): '',
                 serviceTypeId: this.state.serviceTypeId
             }
             images.push(image)
         }
 
-        let params = {...this.state, images: JSON.stringify(images), content: viewToPlainText(this.editor.editing.view.document.getRoot())};
+        // viewToPlainText(this.editor.editing.view.document.getRoot())
+        const content = this.state.content.replace(regexFigure, '');
+
+        let params = {...this.state, images: JSON.stringify(images), content };
         delete params.serviceTypes;
         console.log(params);
-        instance.post('Manager/SetService', params)
-        .then(res => {
-            console.log(res.data);
-        })
-        .catch(error => console.log(error))
+        // instance.post('Manager/SetService', params)
+        // .then(res => {
+        //     console.log(res.data);
+        // })
+        // .catch(error => console.log(error))
         //console.log(listCaption)
 
         // console.log(viewToPlainText(this.editor.editing.view.document.getRoot()))
@@ -180,6 +181,11 @@ export default class FormService extends React.Component {
                     // console.log(viewToPlainText(editor.editing.view.document.getRoot()))
                     // console.log( { event, editor, data } );
                     // this.setState({content: data})
+
+                    // get image tag
+                    for(let image of document.images) {
+                        image.src = image.src.replace(/http:\/\/localhost:3000/g, 'https://localhost:44352')
+                    }
                     this.setState({content: editor.getData()})
                 } }
                 onSelectionChange={this.logEvent}
