@@ -31,6 +31,13 @@ class Services extends React.Component {
         instance.get(`Manager/GetServices?${queryParams}`).then(res => {
             const result = res.data;
             if(result.status === 'success') {
+                result.data.forEach(d => {
+                    if(d.url.indexOf('http') > -1) {
+
+                    } else {
+                        d.url = 'https://localhost:44352' + d.url;
+                    }
+                })
                 this.setState({data: result.data})
             }
         })

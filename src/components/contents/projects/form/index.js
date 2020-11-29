@@ -1,22 +1,20 @@
 import React from 'react';
+import { Container, Form, Button } from 'react-bootstrap';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { Container } from 'react-bootstrap';
-import { Form, Button } from 'react-bootstrap';
 import { instance } from '../../../../helper/axios';
 import { uploadAdapterPlugin } from '../../../../helper/upload';
-import viewToPlainText from '@ckeditor/ckeditor5-clipboard/src/utils/viewtoplaintext';
-export default class FormService extends React.Component {
+import { withRouter } from 'react-router-dom';
+
+class FormProject extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            iname: '',
-            idescription: '',
-            iurl: '',
-            iimages: [],
-            icontent: '',
-            iserviceTypeId: '',
-            serviceTypes: []
+            name: '',
+            description: '',
+            url: '',
+            images: [],
+            content: ''
         }
         this.editor = null;
     }
@@ -39,34 +37,33 @@ export default class FormService extends React.Component {
         // const regexGetTextCaption =  /<figcaption[^>]*>(.+?)<\/figcaption>/g;
         const regexGetTag = />[^<]*</g;
 
-        if(regexFigure.test(this.state.icontent)) {
-            const groupItem = this.state.icontent.match(regexFigure);
+        if(regexFigure.test(this.state.content)) {
+            const groupItem = this.state.content.match(regexFigure);
             for(const gr of groupItem) {
                 const listImage = gr.match(regexImage);
                 const listCaption = gr.match(regexCaption);
                 const image = {
-                    serviceId: 0,
+                    projectId: 0,
                     content: listCaption ? listCaption[0].match(regexGetTag)[0].replace(/^>+/g,'').replace(/<+$/g,''): '',
                     url: listImage ? listImage[0].split('"')[1].replace(/https:\/\/localhost:44352/g, ''): '',
-                    serviceTypeId: this.state.iserviceTypeId
                 }
                 images.push(image)
             }
         }
 
         // viewToPlainText(this.editor.editing.view.document.getRoot())
-        let icontent = '';
-        if(regexFigure.test(this.state.icontent)) {
-            icontent = this.escapeHTML(this.state.icontent.replace(regexFigure, ''));
+        let content = '';
+        if(regexFigure.test(this.state.content)) {
+
+            content = this.escapeHTML(this.state.content.replace(regexFigure, ''));
         } else {
-            icontent = this.escapeHTML(this.state.icontent);
+            content = this.escapeHTML(this.state.content);
         }
         // const content = this.state.content.replace(regexFigure, '');
 
-        let params = {...this.state, iimages: JSON.stringify(images), icontent };
-        delete params.serviceTypes;
+        let params = {...this.state, images: JSON.stringify(images), content };
         console.log(params);
-        instance.post('Manager/SetService', params)
+        instance.post('Manager/SetProject', params)
         .then(res => {
             console.log(res.data);
         })
@@ -77,32 +74,16 @@ export default class FormService extends React.Component {
     }
 
     componentDidMount() {
-        this.getServiceType();
-        // const imageElem = document.getElementById("cover");
-        // imageElem.addEventListener('change', e => {
-        //     console.log(e)
-        // }, false)
     }
 
     handleChange(key, e) {
         if(key === 'name') {
-            this.setState({iname: e.target.value})
+            this.setState({name: e.target.value})
         } else if(key === 'description') {
-            this.setState({idescription: e.target.value})
+            this.setState({description: e.target.value})
         } else if(key === 'url') {
-            this.setState({iurl: e.target.value})
-        } else if(key === 'serviceType') {
-            this.setState({iserviceTypeId: e.target.value})
+            this.setState({url: e.target.value})
         }
-    }
-
-    getServiceType() {
-        instance.get('Manager/GetServiceType').then(res => {
-            if(res.data.status === 'success') {
-                const { data } = res.data;
-                this.setState({serviceTypes: data , iserviceTypeId: data[0].uid})
-            }
-        })
     }
 
     handleUpload(e) {
@@ -112,7 +93,7 @@ export default class FormService extends React.Component {
         .then(res => {
             if(res.data.status === 'success') {
                 const { data } = res.data;
-                this.setState({iurl: data})
+                this.setState({url: data})
             } else {
                 alert('Upload error')
             }
@@ -142,38 +123,25 @@ export default class FormService extends React.Component {
         })
     }
 
-    // shouldComponentUpdate(prevProps, prevState) {
-    //     if(prevState.content !== this.state.content) {
-    //         return false;
-    //     }
-    //     return true;
-    // }
-
     render() {
         return (
             <Container>
               <Form>
                 <Form.Group>
                     <Form.Label>Tiêu đề</Form.Label>
-                    <Form.Control id="name" placeholder="Nhập tiêu đề" onChange={(event) => this.handleChange('name', event)}/>
+                    <Form.Control id="name" placeholder="Nhập tiêu đề" onChange={(event) => this.handleChange('iname', event)}/>
                     {/* <Form.Text className="text-muted">
                     We'll never share your email with anyone else.
                     </Form.Text> */}
                     <Form.Label>Mô tả</Form.Label>
-                    <Form.Control id="description" as="textarea" placeholder="Nhập mô tả" multiple onChange={(event) => this.handleChange('description', event)}/>
-                    <Form.Label>Loại dịch vụ</Form.Label>
-                    <Form.Control id="serviceType" as="select" placeholder="Chọn loại dịch vụ" onChange={(event) => this.handleChange('serviceType', event)} >
-                        {
-                            this.state.serviceTypes.map((s, id) => <option key={id} value={s?.uid}>{s?.name}</option>)
-                        }
-                    </Form.Control>
+                    <Form.Control id="description" as="textarea" placeholder="Nhập mô tả" multiple onChange={(event) => this.handleChange('idescription', event)}/>
                     <Form.Label>Ảnh cover</Form.Label>
                     <Form.File id="cover" onChange={e => this.handleUpload(e)} accept="image/*"/>
                 </Form.Group>
 
                 <CKEditor controlId="formBasicEditor"
                 editor={ ClassicEditor }
-                data={this.state.content}
+                data={this.state.icontent}
                 config={{
                 }}
                 onReady={ editor => {
@@ -199,7 +167,7 @@ export default class FormService extends React.Component {
                     for(let image of document.images) {
                         image.src = image.src.replace(/http:\/\/localhost:3000/g, 'https://localhost:44352')
                     }
-                    this.setState({icontent: editor.getData()})
+                    this.setState({content: editor.getData()})
                 } }
                 onBlur={ ( event, editor ) => {
                     console.log( 'Blur.', editor );
@@ -217,3 +185,5 @@ export default class FormService extends React.Component {
         )
     }
 }
+
+export default withRouter(FormProject);

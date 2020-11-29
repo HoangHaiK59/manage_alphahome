@@ -22,7 +22,7 @@ class Projects extends React.Component {
     }
 
     addPost() {
-        this.props.history.push('services/new-post')
+        this.props.history.push('projects/new-post')
     }
 
     getProjects() {
