@@ -10,12 +10,12 @@ export default class FormService extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            iname: '',
-            idescription: '',
-            iurl: '',
-            iimages: [],
-            icontent: '',
-            iserviceTypeId: '',
+            name: '',
+            description: '',
+            url: '',
+            images: [],
+            content: '',
+            serviceTypeId: '',
             serviceTypes: []
         }
         this.editor = null;
@@ -39,8 +39,8 @@ export default class FormService extends React.Component {
         // const regexGetTextCaption =  /<figcaption[^>]*>(.+?)<\/figcaption>/g;
         const regexGetTag = />[^<]*</g;
 
-        if(regexFigure.test(this.state.icontent)) {
-            const groupItem = this.state.icontent.match(regexFigure);
+        if(regexFigure.test(this.state.content)) {
+            const groupItem = this.state.content.match(regexFigure);
             for(const gr of groupItem) {
                 const listImage = gr.match(regexImage);
                 const listCaption = gr.match(regexCaption);
@@ -48,22 +48,22 @@ export default class FormService extends React.Component {
                     serviceId: 0,
                     content: listCaption ? listCaption[0].match(regexGetTag)[0].replace(/^>+/g,'').replace(/<+$/g,''): '',
                     url: listImage ? listImage[0].split('"')[1].replace(/https:\/\/localhost:44352/g, ''): '',
-                    serviceTypeId: this.state.iserviceTypeId
+                    serviceTypeId: this.state.serviceTypeId
                 }
                 images.push(image)
             }
         }
 
         // viewToPlainText(this.editor.editing.view.document.getRoot())
-        let icontent = '';
-        if(regexFigure.test(this.state.icontent)) {
-            icontent = this.escapeHTML(this.state.icontent.replace(regexFigure, ''));
+        let content = '';
+        if(regexFigure.test(this.state.content)) {
+            content = this.escapeHTML(this.state.content.replace(regexFigure, ''));
         } else {
-            icontent = this.escapeHTML(this.state.icontent);
+            content = this.escapeHTML(this.state.content);
         }
         // const content = this.state.content.replace(regexFigure, '');
 
-        let params = {...this.state, iimages: JSON.stringify(images), icontent };
+        let params = {...this.state, images: JSON.stringify(images), content };
         delete params.serviceTypes;
         console.log(params);
         instance.post('Manager/SetService', params)
@@ -86,13 +86,13 @@ export default class FormService extends React.Component {
 
     handleChange(key, e) {
         if(key === 'name') {
-            this.setState({iname: e.target.value})
+            this.setState({name: e.target.value})
         } else if(key === 'description') {
-            this.setState({idescription: e.target.value})
+            this.setState({description: e.target.value})
         } else if(key === 'url') {
-            this.setState({iurl: e.target.value})
+            this.setState({url: e.target.value})
         } else if(key === 'serviceType') {
-            this.setState({iserviceTypeId: e.target.value})
+            this.setState({serviceTypeId: e.target.value})
         }
     }
 
@@ -100,7 +100,7 @@ export default class FormService extends React.Component {
         instance.get('Manager/GetServiceType').then(res => {
             if(res.data.status === 'success') {
                 const { data } = res.data;
-                this.setState({serviceTypes: data , iserviceTypeId: data[0].uid})
+                this.setState({serviceTypes: data , serviceTypeId: data[0].uid})
             }
         })
     }
@@ -112,7 +112,7 @@ export default class FormService extends React.Component {
         .then(res => {
             if(res.data.status === 'success') {
                 const { data } = res.data;
-                this.setState({iurl: data})
+                this.setState({url: data})
             } else {
                 alert('Upload error')
             }
@@ -199,7 +199,7 @@ export default class FormService extends React.Component {
                     for(let image of document.images) {
                         image.src = image.src.replace(/http:\/\/localhost:3000/g, 'https://localhost:44352')
                     }
-                    this.setState({icontent: editor.getData()})
+                    this.setState({content: editor.getData()})
                 } }
                 onBlur={ ( event, editor ) => {
                     console.log( 'Blur.', editor );

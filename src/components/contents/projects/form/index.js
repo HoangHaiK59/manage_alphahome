@@ -141,7 +141,7 @@ class FormProject extends React.Component {
 
                 <CKEditor controlId="formBasicEditor"
                 editor={ ClassicEditor }
-                data={this.state.icontent}
+                data={this.state.content}
                 config={{
                 }}
                 onReady={ editor => {

@@ -3,7 +3,8 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Container } from 'react-bootstrap';
 import { Form, Button } from 'react-bootstrap';
-
+import { uploadAdapterPlugin } from '../../../../helper/upload';
+import { instance } from '../../../../helper/axios';
 export default class FormPost extends React.Component {
     constructor(props) {
         super(props);
@@ -11,14 +12,81 @@ export default class FormPost extends React.Component {
             name: '',
             description: '',
             url: '',
-            images: [],
-            content: '<p>Hello from CKEditor 5!</p>',
-            imagesText: ''
+            images: '',
+            content: '',
         }
+        this.editor = null;
+    }
+
+    handleUpload(e) {
+        const formData = new FormData();
+        formData.append('formFile', e.target.files[0])
+        instance.post('Upload/UploadImage', formData)
+        .then(res => {
+            if(res.data.status === 'success') {
+                const { data } = res.data;
+                this.setState({url: data})
+            } else {
+                alert('Upload error')
+            }
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
+    escapeHTML(s) {
+        let lookup = {
+            '&': "&amp;",
+            '"': "&quot;",
+            '<': "&lt;",
+            '>': "&gt;"
+        };
+        return s.replace( /[&"<>]/g, (c) => lookup[c] );
     }
 
     onSubmit() {
-        console.log(this.state)
+        const images = [];
+        const regexFigure = /<\s*figure[^>]*>(.*?)<\/*\s*figure>/g;
+        const regexCaption = new RegExp('<\\s*figcaption[^>]*>(.*?)<\\s*/\\s*figcaption>', 'g');
+        const regexImage = new RegExp('src\\s*=\\s*"(.+?)"', 'g');
+        // const regexGetTextCaption =  /<figcaption[^>]*>(.+?)<\/figcaption>/g;
+        const regexGetTag = />[^<]*</g;
+
+        if(regexFigure.test(this.state.content)) {
+            const groupItem = this.state.content.match(regexFigure);
+            for(const gr of groupItem) {
+                const listImage = gr.match(regexImage);
+                const listCaption = gr.match(regexCaption);
+                const image = {
+                    postId: 0,
+                    content: listCaption ? listCaption[0].match(regexGetTag)[0].replace(/^>+/g,'').replace(/<+$/g,''): '',
+                    url: listImage ? listImage[0].split('"')[1].replace(/https:\/\/localhost:44352/g, ''): '',
+                }
+                images.push(image)
+            }
+        }
+
+        // viewToPlainText(this.editor.editing.view.document.getRoot())
+        let content = '';
+        if(regexFigure.test(this.state.content)) {
+
+            content = this.escapeHTML(this.state.content.replace(regexFigure, ''));
+        } else {
+            content = this.escapeHTML(this.state.content);
+        }
+        // const content = this.state.content.replace(regexFigure, '');
+
+        let params = {...this.state, images: JSON.stringify(images), content };
+        console.log(params);
+        instance.post('Manager/SetPost', params)
+        .then(res => {
+            console.log(res.data);
+        })
+        .catch(error => console.log(error))
+        //console.log(listCaption)
+
+        // console.log(viewToPlainText(this.editor.editing.view.document.getRoot()))
     }
 
     handleChange(key, e) {
@@ -28,8 +96,6 @@ export default class FormPost extends React.Component {
             this.setState({description: e.target.value})
         } else if(key === 'url') {
             this.setState({url: e.target.value})
-        } else if(key === 'imagesText') {
-            this.setState({imagesText: e.target.value})
         }
     }
 
@@ -43,12 +109,8 @@ export default class FormPost extends React.Component {
                     {/* <Form.Text className="text-muted">
                     We'll never share your email with anyone else.
                     </Form.Text> */}
-                    <Form.Label>Mô tả</Form.Label>
-                    <Form.Control as="textarea" placeholder="Nhập mô tả" multiple onChange={(event) => this.handleChange('description', event)}/>
                     <Form.Label>Ảnh cover</Form.Label>
-                    <Form.Control placeholder="Ảnh cover" onChange={(event) => this.handleChange('url', event)}/>
-                    <Form.Label>Danh sách link ảnh</Form.Label>
-                    <Form.Control as="textarea" placeholder="Danh sách link ảnh" multiple onChange={(event) => this.handleChange('imagesText', event)}/>
+                    <Form.File id="cover" onChange={e => this.handleUpload(e)} accept="image/*"/>
                 </Form.Group>
 
                 <CKEditor controlId="formBasicEditor"
@@ -56,6 +118,8 @@ export default class FormPost extends React.Component {
                 data={this.state.content}
                 onReady={ editor => {
                     // You can store the "editor" and use when it is needed.
+                    uploadAdapterPlugin(editor)
+                    this.editor = editor;
                     console.log( 'Editor is ready to use!', editor );
                 } }
                 onChange={ ( event, editor ) => {

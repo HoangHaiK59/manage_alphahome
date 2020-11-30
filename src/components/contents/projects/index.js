@@ -31,6 +31,13 @@ class Projects extends React.Component {
         instance.get(`Manager/GetProjectPage?${queryParams}`).then(res => {
             const result = res.data;
             if(result.status === 'success') {
+                result.data.forEach(r => {
+                    if(r.url.indexOf('http') > -1) {
+
+                    } else {
+                        r.url = 'https://localhost:44352' + r.url;
+                    }
+                })
                 this.setState({data: result.data})
             }
         })
