@@ -125,6 +125,9 @@ export default class FormPost extends React.Component {
                 onChange={ ( event, editor ) => {
                     const data = editor.getData();
                     console.log( { event, editor, data } );
+                    for(let image of document.images) {
+                        image.src = image.src.replace(/http:\/\/localhost:3000/g, 'https://localhost:44352')
+                    }
                     this.setState({content: data})
                 } }
                 onBlur={ ( event, editor ) => {
