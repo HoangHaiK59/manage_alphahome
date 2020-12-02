@@ -1,6 +1,6 @@
 import { Container } from 'react-bootstrap';
 import React from 'react';
-import { instance } from '../../helper/axios';
+import { instance } from '../../helper';
 import * as queryString from 'querystring';
 import { Row, Col } from 'react-bootstrap';
 import './content.scss';

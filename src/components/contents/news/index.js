@@ -1,4 +1,4 @@
-import { instance } from '../../../helper/axios';
+import { instance } from '../../../helper';
 import React from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

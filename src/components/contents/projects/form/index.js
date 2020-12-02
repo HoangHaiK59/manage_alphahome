@@ -2,8 +2,8 @@ import React from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { instance } from '../../../../helper/axios';
-import { uploadAdapterPlugin } from '../../../../helper/upload';
+import { instance } from '../../../../helper';
+import { uploadAdapterPlugin } from '../../../../helper';
 import { withRouter } from 'react-router-dom';
 
 class FormProject extends React.Component {

@@ -40,7 +40,7 @@ class SidebarElement extends React.Component {
 
     render() {
         return (
-            <nav className="col-md-1 d-none d-md-block bg-light sidebar">
+            this.props.currentUser && <nav className="col-md-1 d-none d-md-block bg-light sidebar">
                 <div className="sidebar-sticky">
                     <ul className="nav flex-column">
                         <li className="nav-item">

@@ -3,8 +3,8 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Container } from 'react-bootstrap';
 import { Form, Button } from 'react-bootstrap';
-import { instance } from '../../../../helper/axios';
-import { uploadAdapterPlugin } from '../../../../helper/upload';
+import { instance } from '../../../../helper';
+import { uploadAdapterPlugin } from '../../../../helper';
 import viewToPlainText from '@ckeditor/ckeditor5-clipboard/src/utils/viewtoplaintext';
 export default class FormService extends React.Component {
     constructor(props) {
