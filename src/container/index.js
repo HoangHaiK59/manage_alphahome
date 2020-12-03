@@ -38,17 +38,17 @@ class ContainerElement extends React.Component {
                 <NavbarElement currentUser={currentUser}/>
                 <Container fluid className="main">
                     <Row>
-                        <SidebarElement currentUser={currentUser}/>
+                        <SidebarElement currentUser={currentUser} logout={this.logout.bind(this)}/>
                         <main className={currentUser ? "col-md-10 col-lg-11 px-1 ml-sm-auto": "col-md-12 col-lg-12 p-0"}>
                             <Switch>
-                                    <PrivateRoute exact path="/" render={(props) => <Content {...props} title="Home" />} />
-                                    <PrivateRoute exact path="/services" render={(props) => <Services {...props} title="Services" />} />
-                                    <PrivateRoute exact path="/projects" render={(props) => <Projects {...props} title="Projects" />} />
-                                    <PrivateRoute exact path="/services/new-post" render={(props) => <FormService {...props} title="Add new post services" />
+                                    <PrivateRoute exact path="/" render={(props) => <Content {...props} currentUser={currentUser} title="Home" />} />
+                                    <PrivateRoute exact path="/services" render={(props) => <Services {...props} currentUser={currentUser} title="Services" />} />
+                                    <PrivateRoute exact path="/projects" render={(props) => <Projects {...props} currentUser={currentUser} title="Projects" />} />
+                                    <PrivateRoute exact path="/services/new-post" render={(props) => <FormService currentUser={currentUser} {...props} title="Add new post services" />
                                     } />
-                                    <PrivateRoute exact path="/projects/new-post" render={(props) => <FormProject {...props} title="Add new project"  /> } />
-                                    <PrivateRoute exact path="/news" render={(props) => <News {...props} title="Services" />} />
-                                    <PrivateRoute exact path="/news/new-post" render={(props) => <FormPost {...props} title="Add new post" />} />
+                                    <PrivateRoute exact path="/projects/new-post" render={(props) => <FormProject currentUser={currentUser} {...props} title="Add new project"  /> } />
+                                    <PrivateRoute exact path="/news" render={(props) => <News {...props} currentUser={currentUser} title="Services" />} />
+                                    <PrivateRoute exact path="/news/new-post" render={(props) => <FormPost currentUser={currentUser} {...props} title="Add new post" />} />
                                     <Route path='/login' component={Login} />
                             </Switch>
                         </main>

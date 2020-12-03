@@ -1,5 +1,4 @@
 import { Navbar, Nav } from 'react-bootstrap';
-
 const NavbarElement = (props) => {
     return (
         props.currentUser && <Navbar collapseOnSelect expand="sm" bg="light" variant="light" className="fixed-top p-0 shadow">

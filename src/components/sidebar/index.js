@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHome, faNewspaper, faUser, faPager } from '@fortawesome/free-solid-svg-icons';
 import '../../sidebar.scss';
 import { Link } from 'react-router-dom'
-
+import './sidebar.scss';
 class SidebarElement extends React.Component {
     constructor(props) {
         super(props);
@@ -42,6 +42,11 @@ class SidebarElement extends React.Component {
         return (
             this.props.currentUser && <nav className="col-md-1 d-none d-md-block bg-light sidebar">
                 <div className="sidebar-sticky">
+                    <header className="avatar">
+                        <img alt="" src={process.env.PUBLIC_URL + '/user.jpg'} />
+                        <h2>John D.</h2>
+                        <button className="btn-text" onClick={this.props.logout}>Logout</button>
+                    </header>
                     <ul className="nav flex-column">
                         <li className="nav-item">
                             <Link className='nav-link active' onClick={e => this.clickLink(e)} to="/"><FontAwesomeIcon className="mr-2" icon={faHome} />Home</Link>
