@@ -41,14 +41,13 @@ class ContainerElement extends React.Component {
                         <SidebarElement currentUser={currentUser} logout={this.logout.bind(this)}/>
                         <main className={currentUser ? "col-md-10 col-lg-11 px-1 ml-sm-auto": "col-md-12 col-lg-12 p-0"}>
                             <Switch>
-                                    <PrivateRoute exact path="/" render={(props) => <Content {...props} currentUser={currentUser} title="Home" />} />
-                                    <PrivateRoute exact path="/services" render={(props) => <Services {...props} currentUser={currentUser} title="Services" />} />
-                                    <PrivateRoute exact path="/projects" render={(props) => <Projects {...props} currentUser={currentUser} title="Projects" />} />
-                                    <PrivateRoute exact path="/services/new-post" render={(props) => <FormService currentUser={currentUser} {...props} title="Add new post services" />
-                                    } />
-                                    <PrivateRoute exact path="/projects/new-post" render={(props) => <FormProject currentUser={currentUser} {...props} title="Add new project"  /> } />
-                                    <PrivateRoute exact path="/news" render={(props) => <News {...props} currentUser={currentUser} title="Services" />} />
-                                    <PrivateRoute exact path="/news/new-post" render={(props) => <FormPost currentUser={currentUser} {...props} title="Add new post" />} />
+                                    <PrivateRoute exact path="/" component={Content} title="Home" />
+                                    <PrivateRoute exact path="/services" component={Services} title="Services" />
+                                    <PrivateRoute exact path="/projects" component={Projects} title="Projects" />
+                                    <PrivateRoute exact path="/services/new-post" component={FormService} title="Add new post services" />
+                                    <PrivateRoute exact path="/projects/new-post" component={FormProject} title="Add new project" />
+                                    <PrivateRoute exact path="/news" component={News} title="Services" />
+                                    <PrivateRoute exact path="/news/new-post" component= {FormPost} title="Add new post" />
                                     <Route path='/login' component={Login} />
                             </Switch>
                         </main>

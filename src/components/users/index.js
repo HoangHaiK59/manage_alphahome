@@ -6,8 +6,8 @@ import './user.scss';
 class Login extends React.Component {
     constructor(props) {
         super(props);
-        const refEmail = React.createRef(null);
-        const refPW = React.createRef(null);
+        this.refEmail = React.createRef(null);
+        this.refPW = React.createRef(null);
         if (authenticationService.currentUserValue) { 
             this.props.history.push('/');
         }
