@@ -4,6 +4,7 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import * as queryString from 'querystring';
+import { authenticationService } from '../../services';
 class News extends React.Component {
     constructor(props) {
         super(props);
@@ -15,12 +16,17 @@ class News extends React.Component {
     }
 
     componentDidMount() {
+        authenticationService.currentUser.subscribe(x => this.currentUser = x);
         this.getPosts();
     }
 
     getPosts() {
         const queryParams = queryString.stringify({offSet: this.state.offSet, pageSize: this.state.pageSize});
-        instance.get(`Manager/GetPosts?${queryParams}`)
+        instance.get(`Manager/GetPosts?${queryParams}`, {
+            headers: {
+                Authorization: this.currentUser.data.token
+            }
+        })
         .then(res => {
             if(res.data.status === 'success') {
                 const { data } = res.data;

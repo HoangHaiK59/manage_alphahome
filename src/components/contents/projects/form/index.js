@@ -5,6 +5,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { instance } from '../../../../helper';
 import { uploadAdapterPlugin } from '../../../../helper';
 import { withRouter } from 'react-router-dom';
+import { authenticationService } from '../../../services';
 
 class FormProject extends React.Component {
     constructor(props) {
@@ -63,7 +64,11 @@ class FormProject extends React.Component {
 
         let params = {...this.state, images: JSON.stringify(images), content };
         console.log(params);
-        instance.post('Manager/SetProject', params)
+        instance.post('Manager/SetProject', {
+            headers: {
+                Authorization: this.currentUser.data.token
+            }
+        }, params)
         .then(res => {
             console.log(res.data);
         })
@@ -74,6 +79,7 @@ class FormProject extends React.Component {
     }
 
     componentDidMount() {
+        authenticationService.currentUser.subscribe(x => this.currentUser = x);
     }
 
     handleChange(key, e) {
@@ -89,7 +95,11 @@ class FormProject extends React.Component {
     handleUpload(e) {
         const formData = new FormData();
         formData.append('formFile', e.target.files[0])
-        instance.post('Upload/UploadImage', formData)
+        instance.post('Upload/UploadImage', formData, {
+            headers: {
+                Authorization: this.currentUser.data.token
+            }
+        })
         .then(res => {
             if(res.data.status === 'success') {
                 const { data } = res.data;
@@ -109,7 +119,9 @@ class FormProject extends React.Component {
         for(const file of fileList) {
             formData.append('formFiles', file);
         }
-        instance.post('Upload/UploadMultiImage', formData, {headers: {'content-type': 'multipart/form-data'}})
+        instance.post('Upload/UploadMultiImage', formData, {headers: {'content-type': 'multipart/form-data',
+        Authorization: this.currentUser.data.token
+    }})
         .then(res => {
             if(res.data.status === 'success') {
                 const { data } = res.data;

@@ -22,7 +22,7 @@ class Login extends React.Component {
     }
     render () {
         return (
-            <section id="cover">
+            <section id="cover-bg">
                 <div id="cover-caption">
                     <div id="container" className="container">
                         <div className="row">

@@ -6,6 +6,7 @@ import { Form, Button } from 'react-bootstrap';
 import { instance } from '../../../../helper';
 import { uploadAdapterPlugin } from '../../../../helper';
 import viewToPlainText from '@ckeditor/ckeditor5-clipboard/src/utils/viewtoplaintext';
+import { authenticationService } from '../../../services';
 export default class FormService extends React.Component {
     constructor(props) {
         super(props);
@@ -66,7 +67,11 @@ export default class FormService extends React.Component {
         let params = {...this.state, images: JSON.stringify(images), content };
         delete params.serviceTypes;
         console.log(params);
-        instance.post('Manager/SetService', params)
+        instance.post('Manager/SetService', params, {
+            headers: {
+                Authorization: this.currentUser.data.token
+            }
+        })
         .then(res => {
             console.log(res.data);
         })
@@ -77,6 +82,7 @@ export default class FormService extends React.Component {
     }
 
     componentDidMount() {
+        authenticationService.currentUser.subscribe(x => this.currentUser = x);
         this.getServiceType();
         // const imageElem = document.getElementById("cover");
         // imageElem.addEventListener('change', e => {
@@ -97,7 +103,11 @@ export default class FormService extends React.Component {
     }
 
     getServiceType() {
-        instance.get('Manager/GetServiceType').then(res => {
+        instance.get('Manager/GetServiceType', {
+            headers: {
+                Authorization: this.currentUser.data.token
+            }
+        }).then(res => {
             if(res.data.status === 'success') {
                 const { data } = res.data;
                 this.setState({serviceTypes: data , serviceTypeId: data[0].uid})
@@ -108,7 +118,11 @@ export default class FormService extends React.Component {
     handleUpload(e) {
         const formData = new FormData();
         formData.append('formFile', e.target.files[0])
-        instance.post('Upload/UploadImage', formData)
+        instance.post('Upload/UploadImage', formData, {
+            headers: {
+                Authorization: this.currentUser.data.token
+            }
+        })
         .then(res => {
             if(res.data.status === 'success') {
                 const { data } = res.data;
@@ -128,7 +142,7 @@ export default class FormService extends React.Component {
         for(const file of fileList) {
             formData.append('formFiles', file);
         }
-        instance.post('Upload/UploadMultiImage', formData, {headers: {'content-type': 'multipart/form-data'}})
+        instance.post('Upload/UploadMultiImage', formData, {headers: {'content-type': 'multipart/form-data', Authorization: this.currentUser.data.token}})
         .then(res => {
             if(res.data.status === 'success') {
                 const { data } = res.data;

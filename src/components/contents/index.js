@@ -4,6 +4,7 @@ import { instance } from '../../helper';
 import * as queryString from 'querystring';
 import { Row, Col } from 'react-bootstrap';
 import './content.scss';
+import { authenticationService } from '../services';
 class Content extends React.Component {
     constructor(props) {
         super(props);
@@ -15,13 +16,18 @@ class Content extends React.Component {
     }
 
     componentDidMount() {
+        authenticationService.currentUser.subscribe(x => this.currentUser = x);
         this.getManagerPage();
     }
 
     getManagerPage() {
         const { offSet, pageSize } = this.state;
         const queryParams = queryString.stringify({ offSet, pageSize })
-        instance.get(`Manager/GetManagerPage?${queryParams}`).then(res => {
+        instance.get(`Manager/GetManagerPage?${queryParams}`, {
+            headers: {
+                Authorization: this.currentUser.data.token
+            }
+        }).then(res => {
             const {data} = res.data;
             data.services.forEach(s => {
                 if(s.url.indexOf('https') === -1) {

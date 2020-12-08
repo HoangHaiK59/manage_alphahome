@@ -8,6 +8,8 @@ const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('
 export const authenticationService = {
     login,
     logout,
+    refreshToken,
+    stopRefreshTokenTimer,
     currentUser: currentUserSubject.asObservable(),
     get currentUserValue () { return currentUserSubject.value }
 };
@@ -34,4 +36,33 @@ function logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('currentUser');
     currentUserSubject.next(null);
+}
+
+function refreshToken() {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+    };
+    return fetch(`https://localhost:44352/api/User/refresh-token`, requestOptions)
+        .then(user => {
+            // publish user to subscribers and start timer to refresh token
+            currentUserSubject.next(user);
+            startRefreshTokenTimer();
+            return user;
+        });
+}
+
+let refreshTokenTimeout;
+function startRefreshTokenTimer() {
+    // parse json object from base64 encoded jwt token
+    const token = JSON.parse(atob(currentUserSubject.value.token.split('.')[1]));
+
+    // set a timeout to refresh the token a minute before it expires
+    const expires = new Date(token.exp * 1000);
+    const timeout = expires.getTime() - Date.now() - (60 * 1000);
+    refreshTokenTimeout = setTimeout(refreshToken, timeout);
+}
+
+function stopRefreshTokenTimer() {
+    clearTimeout(refreshTokenTimeout);
 }

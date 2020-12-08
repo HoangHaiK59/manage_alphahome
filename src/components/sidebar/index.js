@@ -11,23 +11,34 @@ class SidebarElement extends React.Component {
         this.state = {
 
         }
+
     }
 
     componentDidMount() {
         this.initActive();
     }
 
+    shouldComponentUpdate(prevProps, prevState) {
+        return true;
+    }
+
     initActive() {
-        const selectors = document.querySelectorAll('.nav-link');
-        if (selectors.length > 0) {
-            selectors.forEach(s => {
-                if(s.pathname === this.props.location.pathname) {
-                    s.classList.add('active');
-                } else {
-                    s.classList.remove('active');
-                }
-            })
-        }
+        this.timeout = setTimeout(() => {
+            const selectors = document.querySelectorAll('.nav-link');
+            if (selectors.length > 0) {
+                selectors.forEach(s => {
+                    if(s.pathname === this.props.location.pathname) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                })
+            }
+        }, 200)
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timeout);
     }
 
     clickLink(event) {
@@ -49,7 +60,7 @@ class SidebarElement extends React.Component {
                     </header>
                     <ul className="nav flex-column">
                         <li className="nav-item">
-                            <Link className='nav-link active' onClick={e => this.clickLink(e)} to="/"><FontAwesomeIcon className="mr-2" icon={faHome} />Home</Link>
+                            <Link className='nav-link' onClick={e => this.clickLink(e)} to="/"><FontAwesomeIcon className="mr-2" icon={faHome} />Home</Link>
                         </li>
                         <li className="nav-item">
                             <Link className='nav-link' onClick={e => this.clickLink(e)} to="/services"><FontAwesomeIcon className="mr-2" icon={faUser} />Dịch vụ</Link>

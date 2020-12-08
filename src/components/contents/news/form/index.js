@@ -5,6 +5,7 @@ import { Container } from 'react-bootstrap';
 import { Form, Button } from 'react-bootstrap';
 import { uploadAdapterPlugin } from '../../../../helper';
 import { instance } from '../../../../helper';
+import { authenticationService } from '../../../services';
 export default class FormPost extends React.Component {
     constructor(props) {
         super(props);
@@ -21,7 +22,11 @@ export default class FormPost extends React.Component {
     handleUpload(e) {
         const formData = new FormData();
         formData.append('formFile', e.target.files[0])
-        instance.post('Upload/UploadImage', formData)
+        instance.post('Upload/UploadImage', formData, {
+            headers: {
+                Authorization: this.currentUser.data.token
+            }
+        })
         .then(res => {
             if(res.data.status === 'success') {
                 const { data } = res.data;
@@ -79,7 +84,11 @@ export default class FormPost extends React.Component {
 
         let params = {...this.state, images: JSON.stringify(images), content };
         console.log(params);
-        instance.post('Manager/SetPost', params)
+        instance.post('Manager/SetPost', params, {
+            headers: {
+                Authorization: this.currentUser.data.token
+            }
+        })
         .then(res => {
             console.log(res.data);
         })
@@ -97,6 +106,10 @@ export default class FormPost extends React.Component {
         } else if(key === 'url') {
             this.setState({url: e.target.value})
         }
+    }
+
+    componentDidMount() {
+        authenticationService.currentUser.subscribe(x => this.currentUser = x);
     }
 
     render() {

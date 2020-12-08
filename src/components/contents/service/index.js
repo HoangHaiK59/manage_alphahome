@@ -7,6 +7,7 @@ import { withRouter } from 'react-router';
 import { instance } from '../../../helper';
 import * as queryString from 'querystring';
 import '../custom.scss';
+import { authenticationService } from '../../services';
 class Services extends React.Component {
     constructor(props) {
         super(props);
@@ -18,6 +19,7 @@ class Services extends React.Component {
     }
 
     componentDidMount() {
+        authenticationService.currentUser.subscribe(x => this.currentUser = x);
         this.getServices();
     }
 
@@ -28,7 +30,11 @@ class Services extends React.Component {
     getServices() {
         const { offSet, pageSize } = this.state;
         const queryParams = queryString.stringify({offSet, pageSize});
-        instance.get(`Manager/GetServices?${queryParams}`).then(res => {
+        instance.get(`Manager/GetServices?${queryParams}`, {
+            headers: {
+                Authorization: this.currentUser.data.token
+            }
+        }).then(res => {
             const result = res.data;
             if(result.status === 'success') {
                 result.data.forEach(d => {
