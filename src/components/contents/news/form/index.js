@@ -24,7 +24,7 @@ export default class FormPost extends React.Component {
         formData.append('formFile', e.target.files[0])
         instance.post('Upload/UploadImage', formData, {
             headers: {
-                Authorization: this.currentUser.data.token
+                Authorization: `Bearer ` + this.currentUser.data.token
             }
         })
         .then(res => {
@@ -86,7 +86,7 @@ export default class FormPost extends React.Component {
         console.log(params);
         instance.post('Manager/SetPost', params, {
             headers: {
-                Authorization: this.currentUser.data.token
+                Authorization: `Bearer ` + this.currentUser.data.token
             }
         })
         .then(res => {

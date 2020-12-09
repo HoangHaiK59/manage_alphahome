@@ -26,6 +26,7 @@ function login(email, password) {
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
             localStorage.setItem('currentUser', JSON.stringify(user));
+            startRefreshTokenTimer();
             currentUserSubject.next(user);
 
             return user;
@@ -35,6 +36,7 @@ function login(email, password) {
 function logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('currentUser');
+    stopRefreshTokenTimer();
     currentUserSubject.next(null);
 }
 
@@ -46,21 +48,27 @@ function refreshToken() {
     return fetch(`https://localhost:44352/api/User/refresh-token`, requestOptions)
         .then(user => {
             // publish user to subscribers and start timer to refresh token
-            currentUserSubject.next(user);
-            startRefreshTokenTimer();
-            return user;
+            if(user.status === 'success') {
+                currentUserSubject.next(user.data);
+                startRefreshTokenTimer();
+                return user;
+            } else {
+                stopRefreshTokenTimer();
+            }
         });
 }
 
 let refreshTokenTimeout;
 function startRefreshTokenTimer() {
-    // parse json object from base64 encoded jwt token
+    if (currentUserSubject.value) {
+            // parse json object from base64 encoded jwt token
     const token = JSON.parse(atob(currentUserSubject.value.token.split('.')[1]));
 
     // set a timeout to refresh the token a minute before it expires
     const expires = new Date(token.exp * 1000);
     const timeout = expires.getTime() - Date.now() - (60 * 1000);
     refreshTokenTimeout = setTimeout(refreshToken, timeout);
+    }
 }
 
 function stopRefreshTokenTimer() {

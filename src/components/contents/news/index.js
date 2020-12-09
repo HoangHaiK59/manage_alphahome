@@ -24,7 +24,7 @@ class News extends React.Component {
         const queryParams = queryString.stringify({offSet: this.state.offSet, pageSize: this.state.pageSize});
         instance.get(`Manager/GetPosts?${queryParams}`, {
             headers: {
-                Authorization: this.currentUser.data.token
+                Authorization: `Bearer ` + this.currentUser.data.token
             }
         })
         .then(res => {

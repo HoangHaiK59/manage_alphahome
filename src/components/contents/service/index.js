@@ -32,7 +32,7 @@ class Services extends React.Component {
         const queryParams = queryString.stringify({offSet, pageSize});
         instance.get(`Manager/GetServices?${queryParams}`, {
             headers: {
-                Authorization: this.currentUser.data.token
+                Authorization: `Bearer ` + this.currentUser.data.token
             }
         }).then(res => {
             const result = res.data;

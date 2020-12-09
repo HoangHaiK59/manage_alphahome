@@ -66,7 +66,7 @@ class FormProject extends React.Component {
         console.log(params);
         instance.post('Manager/SetProject', {
             headers: {
-                Authorization: this.currentUser.data.token
+                Authorization: `Bearer ` + this.currentUser.data.token
             }
         }, params)
         .then(res => {
@@ -97,7 +97,7 @@ class FormProject extends React.Component {
         formData.append('formFile', e.target.files[0])
         instance.post('Upload/UploadImage', formData, {
             headers: {
-                Authorization: this.currentUser.data.token
+                Authorization: `Bearer ` + this.currentUser.data.token
             }
         })
         .then(res => {
