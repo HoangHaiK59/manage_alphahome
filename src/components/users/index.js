@@ -8,6 +8,9 @@ class Login extends React.Component {
         super(props);
         this.refEmail = React.createRef(null);
         this.refPW = React.createRef(null);
+    }
+
+    componentDidMount() {
         if (authenticationService.currentUserValue) { 
             this.props.history.push('/');
         }

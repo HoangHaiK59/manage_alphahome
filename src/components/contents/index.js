@@ -16,18 +16,18 @@ class Content extends React.Component {
     }
 
     componentDidMount() {
-        authenticationService.currentUser.subscribe(x => this.currentUser = x);
-        this.getManagerPage();
+        authenticationService.currentUser.subscribe(x => {
+            this.currentUser = x;
+            if (this.currentUser) {
+                this.getManagerPage();
+            }
+        });
     }
 
     getManagerPage() {
         const { offSet, pageSize } = this.state;
         const queryParams = queryString.stringify({ offSet, pageSize })
-        instance.get(`Manager/GetManagerPage?${queryParams}`, {
-            headers: {
-                Authorization: `Bearer ` + this.currentUser.data.token
-            }
-        }).then(res => {
+        instance.get(`Manager/GetManagerPage?${queryParams}`).then(res => {
             if (res.data.status === 'success') {
                 const { data } = res.data;
                 data.services.forEach(s => {
@@ -36,6 +36,11 @@ class Content extends React.Component {
                     }
                 });
                 data.projects.forEach(s => {
+                    if(s.url.indexOf('https') === -1) {
+                        s.url = 'https://localhost:44352' + s.url;
+                    }
+                });
+                data.posts.forEach(s => {
                     if(s.url.indexOf('https') === -1) {
                         s.url = 'https://localhost:44352' + s.url;
                     }
@@ -107,6 +112,40 @@ class Content extends React.Component {
                             <Row>
                                 {
                                     this.state.data?.projects.filter((v, i) => i !== 0).map((d, id) => <Col key={id} sm={12} md={6} lg={6}>
+                                    <img src={d?.url} alt="" width="100%" height="235px" />
+                                    <h5>{d?.name}</h5>
+                                </Col>)
+                                }
+                            </Row>
+                            
+                        </Col>
+
+                </Row>
+            </div>
+
+            <div className="section">
+                <Row>
+                    <Col>
+                        <h3>Tin tức</h3>
+                    </Col>
+                </Row>
+                <Row>
+                    {
+                        this.state.data?.posts.filter((v, i) => i === 0).map((d, id) => 
+                        <Col key={id} sm={12} md={6} lg={6}>
+                            <div className="content">
+                                <img src={d?.url} alt="" width="100%" />
+                                <h5>{d?.name}</h5>
+                            </div>
+
+                         </Col>)
+                    }
+
+                        <Col sm={12} md={6} lg={6}>
+                            
+                            <Row>
+                                {
+                                    this.state.data?.posts.filter((v, i) => i !== 0).map((d, id) => <Col key={id} sm={12} md={6} lg={6}>
                                     <img src={d?.url} alt="" width="100%" height="235px" />
                                     <h5>{d?.name}</h5>
                                 </Col>)

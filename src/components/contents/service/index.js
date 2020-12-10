@@ -19,22 +19,26 @@ class Services extends React.Component {
     }
 
     componentDidMount() {
-        authenticationService.currentUser.subscribe(x => this.currentUser = x);
-        this.getServices();
+        authenticationService.currentUser.subscribe(x => {
+            this.currentUser = x;
+            if (this.currentUser) {
+                this.getServices();
+            }
+        });
     }
 
     addPost() {
         this.props.history.push('services/new-post')
     }
 
+    editPost(id) {
+        this.props.history.push(`services/edit-post/${id}`)
+    }
+
     getServices() {
         const { offSet, pageSize } = this.state;
         const queryParams = queryString.stringify({offSet, pageSize});
-        instance.get(`Manager/GetServices?${queryParams}`, {
-            headers: {
-                Authorization: `Bearer ` + this.currentUser.data.token
-            }
-        }).then(res => {
+        instance.get(`Manager/GetServices?${queryParams}`).then(res => {
             const result = res.data;
             if(result.status === 'success') {
                 result.data.forEach(d => {
@@ -106,7 +110,7 @@ class Services extends React.Component {
                             </Col>
                             <Col sm={1} md={1} lg={1}>
                                 <div className="d-flex">
-                                    <Button variant="primary"><FontAwesomeIcon icon={faEdit}/></Button>
+                                    <Button variant="primary" onClick={() => this.editPost(d.id)}><FontAwesomeIcon icon={faEdit}/></Button>
                                     <Button variant="danger" className="ml-1"><FontAwesomeIcon icon={faTrash}/></Button>
                                 </div>
                             </Col>

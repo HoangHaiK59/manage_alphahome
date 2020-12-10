@@ -14,6 +14,7 @@ import './container.scss';
 import { authenticationService } from '../components/services';
 import { PrivateRoute } from '../components/router';
 import Login from '../components/users';
+import FormEditService from '../components/contents/service/form-edit';
 class ContainerElement extends React.Component {
     constructor(props) {
         super(props);
@@ -23,7 +24,9 @@ class ContainerElement extends React.Component {
     }
 
     componentDidMount() {
-        authenticationService.currentUser.subscribe(x => this.setState({currentUser: x}))
+        authenticationService.currentUser.subscribe(x => {
+            this.setState({currentUser: x})
+        })
     }
 
     logout() {
@@ -39,12 +42,13 @@ class ContainerElement extends React.Component {
                 <Container fluid className="main">
                     <Row>
                         <SidebarElement currentUser={currentUser} logout={this.logout.bind(this)}/>
-                        <main className={currentUser ? "col-md-10 col-lg-11 px-1 ml-sm-auto": "col-md-12 col-lg-12 p-0"}>
+                        <main className={currentUser ? "col-md-10 col-lg-10 px-1 ml-sm-auto": "col-md-12 col-lg-12 p-0"}>
                             <Switch>
                                     <PrivateRoute exact path="/" component={Content} title="Home" />
-                                    <PrivateRoute exact path="/services" component={Services} title="Services" />
+                                    <PrivateRoute exact path="/services" component={Services}title="Services" />
                                     <PrivateRoute exact path="/projects" component={Projects} title="Projects" />
                                     <PrivateRoute exact path="/services/new-post" component={FormService} title="Add new post services" />
+                                    <PrivateRoute exact path="/services/edit-post/:id" component={FormEditService} title="Edit service" />
                                     <PrivateRoute exact path="/projects/new-post" component={FormProject} title="Add new project" />
                                     <PrivateRoute exact path="/news" component={News} title="Services" />
                                     <PrivateRoute exact path="/news/new-post" component= {FormPost} title="Add new post" />

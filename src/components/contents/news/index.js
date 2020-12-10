@@ -16,15 +16,19 @@ class News extends React.Component {
     }
 
     componentDidMount() {
-        authenticationService.currentUser.subscribe(x => this.currentUser = x);
-        this.getPosts();
+        authenticationService.currentUser.subscribe(x => {
+            this.currentUser = x;
+            if (this.currentUser) {
+                this.getPosts();
+            }
+        });
     }
 
     getPosts() {
         const queryParams = queryString.stringify({offSet: this.state.offSet, pageSize: this.state.pageSize});
         instance.get(`Manager/GetPosts?${queryParams}`, {
             headers: {
-                Authorization: `Bearer ` + this.currentUser.data.token
+                Authorization: `Bearer ` + this.currentUser.token
             }
         })
         .then(res => {

@@ -7,7 +7,8 @@ import { instance } from '../../../../helper';
 import { uploadAdapterPlugin } from '../../../../helper';
 import viewToPlainText from '@ckeditor/ckeditor5-clipboard/src/utils/viewtoplaintext';
 import { authenticationService } from '../../../services';
-export default class FormService extends React.Component {
+import * as queryString from 'querystring';
+export default class FormEditService extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -81,7 +82,7 @@ export default class FormService extends React.Component {
         authenticationService.currentUser.subscribe(x => {
             this.currentUser = x;
             if (this.currentUser) {
-                this.getServiceType();
+                this.getServiceById();
             }
         });
         // const imageElem = document.getElementById("cover");
@@ -102,11 +103,25 @@ export default class FormService extends React.Component {
         }
     }
 
-    getServiceType() {
-        instance.get('Manager/GetServiceType').then(res => {
+    getServiceById() {
+        const queryParams = queryString.stringify(this.props.match.params);
+        instance.get(`Manager/GetServiceById?${queryParams}`).then(res => {
             if(res.data.status === 'success') {
-                const { data } = res.data;
-                this.setState({serviceTypes: data , serviceTypeId: data[0].uid})
+                let dataRes = res.data.data;
+                instance.get('Manager/GetServiceType').then(result => {
+                    if(result.data.status === 'success') {
+                        const { data } = result.data;
+                        this.setState({
+                            serviceTypes: data,
+                            name: dataRes.name,
+                            description: dataRes.description,
+                            content: `<p>${dataRes.content}</p>`,
+                            url: dataRes.url,
+                            images: dataRes.images,
+                            serviceTypeId: dataRes.serviceTypeId
+                        })
+                    }
+                })
             }
         })
     }
@@ -161,19 +176,19 @@ export default class FormService extends React.Component {
               <Form>
                 <div className="text-center">
                     <Form.Label>
-                        <h3>Thêm dịch vụ</h3>
+                        <h3>Sửa dịch vụ</h3>
                     </Form.Label>
                 </div>
                 <Form.Group>
                     <Form.Label>Tiêu đề</Form.Label>
-                    <Form.Control id="name" placeholder="Nhập tiêu đề" onChange={(event) => this.handleChange('name', event)}/>
+                    <Form.Control id="name" placeholder="Nhập tiêu đề" defaultValue={this.state.name} onChange={(event) => this.handleChange('name', event)}/>
                     {/* <Form.Text className="text-muted">
                     We'll never share your email with anyone else.
                     </Form.Text> */}
                     <Form.Label>Mô tả</Form.Label>
-                    <Form.Control id="description" as="textarea" placeholder="Nhập mô tả" multiple onChange={(event) => this.handleChange('description', event)}/>
+                    <Form.Control id="description" as="textarea" defaultValue={this.state.description}  placeholder="Nhập mô tả" multiple onChange={(event) => this.handleChange('description', event)}/>
                     <Form.Label>Loại dịch vụ</Form.Label>
-                    <Form.Control id="serviceType" as="select" placeholder="Chọn loại dịch vụ" onChange={(event) => this.handleChange('serviceType', event)} >
+                    <Form.Control id="serviceType" as="select" defaultValue={this.state.serviceTypeId}  placeholder="Chọn loại dịch vụ" onChange={(event) => this.handleChange('serviceType', event)} >
                         {
                             this.state.serviceTypes.map((s, id) => <option key={id} value={s?.uid}>{s?.name}</option>)
                         }

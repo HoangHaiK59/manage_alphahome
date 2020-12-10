@@ -6,6 +6,17 @@ export const instance = axios.create({
     headers: {'content-type': 'application/json'}
   });
 
+  instance.interceptors.request.use(config => {
+    if (authenticationService.currentUser) {
+      const token = authenticationService.currentUserValue.token;
+      if (token) {
+        config.headers['Authorization'] = 'Bearer ' + token;
+      }
+    }
+    return config;
+  }, error => {
+    Promise.reject(error);
+  })
 
   // error
   instance.interceptors.response.use((response) => {
@@ -16,6 +27,12 @@ export const instance = axios.create({
     {
       originalRequest._retry = true;
       // return authenticationService.logout();
-      return authenticationService.refreshToken();
+      authenticationService.refreshToken()
+      .then(result => {
+        if (result) {
+          instance.defaults.headers.common['Authorization'] = `Bearer ` + result.token
+          instance(originalRequest)
+        }
+      });
     }
   })

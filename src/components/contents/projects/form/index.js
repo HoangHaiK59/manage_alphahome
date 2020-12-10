@@ -66,7 +66,7 @@ class FormProject extends React.Component {
         console.log(params);
         instance.post('Manager/SetProject', {
             headers: {
-                Authorization: `Bearer ` + this.currentUser.data.token
+                Authorization: `Bearer ` + this.currentUser.token
             }
         }, params)
         .then(res => {
@@ -95,11 +95,7 @@ class FormProject extends React.Component {
     handleUpload(e) {
         const formData = new FormData();
         formData.append('formFile', e.target.files[0])
-        instance.post('Upload/UploadImage', formData, {
-            headers: {
-                Authorization: `Bearer ` + this.currentUser.data.token
-            }
-        })
+        instance.post('Upload/UploadImage', formData)
         .then(res => {
             if(res.data.status === 'success') {
                 const { data } = res.data;
@@ -119,8 +115,7 @@ class FormProject extends React.Component {
         for(const file of fileList) {
             formData.append('formFiles', file);
         }
-        instance.post('Upload/UploadMultiImage', formData, {headers: {'content-type': 'multipart/form-data',
-        Authorization: this.currentUser.data.token
+        instance.post('Upload/UploadMultiImage', formData, {headers: {'content-type': 'multipart/form-data'
     }})
         .then(res => {
             if(res.data.status === 'success') {
@@ -139,6 +134,11 @@ class FormProject extends React.Component {
         return (
             <Container>
               <Form>
+                <div className="text-center">
+                    <Form.Label>
+                        <h3>Thêm dự án</h3>
+                    </Form.Label>
+                </div>
                 <Form.Group>
                     <Form.Label>Tiêu đề</Form.Label>
                     <Form.Control id="name" placeholder="Nhập tiêu đề" onChange={(event) => this.handleChange('iname', event)}/>

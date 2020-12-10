@@ -22,11 +22,7 @@ export default class FormPost extends React.Component {
     handleUpload(e) {
         const formData = new FormData();
         formData.append('formFile', e.target.files[0])
-        instance.post('Upload/UploadImage', formData, {
-            headers: {
-                Authorization: `Bearer ` + this.currentUser.data.token
-            }
-        })
+        instance.post('Upload/UploadImage', formData)
         .then(res => {
             if(res.data.status === 'success') {
                 const { data } = res.data;
@@ -84,11 +80,7 @@ export default class FormPost extends React.Component {
 
         let params = {...this.state, images: JSON.stringify(images), content };
         console.log(params);
-        instance.post('Manager/SetPost', params, {
-            headers: {
-                Authorization: `Bearer ` + this.currentUser.data.token
-            }
-        })
+        instance.post('Manager/SetPost', params)
         .then(res => {
             console.log(res.data);
         })
@@ -116,6 +108,11 @@ export default class FormPost extends React.Component {
         return (
             <Container>
               <Form>
+                <div className="text-center">
+                    <Form.Label>
+                        <h3>Thêm tin tức</h3>
+                    </Form.Label>
+                </div>
                 <Form.Group controlId="formBasicEmail">
                     <Form.Label>Tiêu đề</Form.Label>
                     <Form.Control placeholder="Nhập tiêu đề" onChange={(event) => this.handleChange('name', event)}/>

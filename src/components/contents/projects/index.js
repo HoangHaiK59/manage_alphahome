@@ -19,8 +19,12 @@ class Projects extends React.Component {
     }
 
     componentDidMount() {
-        authenticationService.currentUser.subscribe(x => this.currentUser = x);
-        this.getProjects();
+        authenticationService.currentUser.subscribe(x => {
+            this.currentUser = x;
+            if (this.currentUser) {
+                this.getProjects();
+            }
+        });
     }
 
     addPost() {
@@ -30,11 +34,7 @@ class Projects extends React.Component {
     getProjects() {
         const { offSet, pageSize } = this.state;
         const queryParams = queryString.stringify({offSet, pageSize});
-        instance.get(`Manager/GetProjectPage?${queryParams}`, {
-            headers: {
-                Authorization: `Bearer ` + this.currentUser.data.token
-            }
-        }).then(res => {
+        instance.get(`Manager/GetProjectPage?${queryParams}`).then(res => {
             const result = res.data;
             if(result.status === 'success') {
                 result.data.forEach(r => {
