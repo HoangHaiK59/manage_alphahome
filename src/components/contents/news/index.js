@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import * as queryString from 'querystring';
 import { authenticationService } from '../../services';
+import { Loading } from '../../loading';
 class News extends React.Component {
     constructor(props) {
         super(props);
@@ -16,12 +17,16 @@ class News extends React.Component {
     }
 
     componentDidMount() {
-        authenticationService.currentUser.subscribe(x => {
+        this.subscription = authenticationService.currentUser.subscribe(x => {
             this.currentUser = x;
             if (this.currentUser) {
                 this.getPosts();
             }
         });
+    }
+
+    componentWillUnmount() {
+        this.subscription.unsubscribe();
     }
 
     getPosts() {
@@ -50,9 +55,14 @@ class News extends React.Component {
         this.props.history.push('news/new-post')
     }
 
+    editPost(id) {
+        this.props.history.push(`news/edit-post/${id}`)
+    }
+
     render() {
         return (
-<Container fluid>
+            this.state.data ?
+        <Container fluid>
             <Row style={{height: '50px'}}>
                 <Col md={3} sm={6}>
                     <Button variant="primary" onClick={this.addPost.bind(this)}>
@@ -102,7 +112,7 @@ class News extends React.Component {
                             </Col>
                             <Col sm={1} md={1} lg={1}>
                                 <div className="d-flex">
-                                    <Button variant="primary"><FontAwesomeIcon icon={faEdit}/></Button>
+                                    <Button variant="primary" onClick={() => this.editPost(d.id)}><FontAwesomeIcon icon={faEdit}/></Button>
                                     <Button variant="danger" className="ml-1"><FontAwesomeIcon icon={faTrash}/></Button>
                                 </div>
                             </Col>
@@ -110,7 +120,7 @@ class News extends React.Component {
                     </Col>)
                 }
             </Row>
-        </Container>
+        </Container>: <Loading />
         )
     }
 }

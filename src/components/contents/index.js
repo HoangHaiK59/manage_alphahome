@@ -5,6 +5,7 @@ import * as queryString from 'querystring';
 import { Row, Col } from 'react-bootstrap';
 import './content.scss';
 import { authenticationService } from '../services';
+import { Loading } from '../loading';
 class Content extends React.Component {
     constructor(props) {
         super(props);
@@ -54,7 +55,7 @@ class Content extends React.Component {
     }
 
     render() {
-        return <Container fluid>
+        return this.state.data ? <Container fluid>
             <div className="section">
                 <Row>
                     <Col>
@@ -156,7 +157,7 @@ class Content extends React.Component {
 
                 </Row>
             </div>
-        </Container>
+        </Container>: <Loading/>
     }
 }
 

@@ -8,6 +8,7 @@ import { instance } from '../../../helper';
 import * as queryString from 'querystring';
 import '../custom.scss';
 import { authenticationService } from '../../services';
+import { Loading } from '../../loading';
 class Projects extends React.Component {
     constructor(props) {
         super(props);
@@ -19,7 +20,7 @@ class Projects extends React.Component {
     }
 
     componentDidMount() {
-        authenticationService.currentUser.subscribe(x => {
+        this.subscription = authenticationService.currentUser.subscribe(x => {
             this.currentUser = x;
             if (this.currentUser) {
                 this.getProjects();
@@ -27,8 +28,16 @@ class Projects extends React.Component {
         });
     }
 
+    componentWillUnmount() {
+        this.subscription.unsubscribe();
+    }
+
     addPost() {
         this.props.history.push('projects/new-post')
+    }
+
+    editPost(id) {
+        this.props.history.push(`projects/edit-post/${id}`)
     }
 
     getProjects() {
@@ -50,7 +59,7 @@ class Projects extends React.Component {
     }
 
     render() {
-        return <Container fluid>
+        return this.state.data ? <Container fluid>
             <Row style={{height: '50px'}}>
                 <Col md={3} sm={6}>
                     <Button variant="primary" onClick={this.addPost.bind(this)}>
@@ -100,7 +109,7 @@ class Projects extends React.Component {
                             </Col>
                             <Col sm={1} md={1} lg={1}>
                                 <div className="d-flex">
-                                    <Button variant="primary"><FontAwesomeIcon icon={faEdit}/></Button>
+                                    <Button variant="primary" onClick={() => this.editPost(d.id)}><FontAwesomeIcon icon={faEdit}/></Button>
                                     <Button variant="danger" className="ml-1"><FontAwesomeIcon icon={faTrash}/></Button>
                                 </div>
                             </Col>
@@ -108,7 +117,7 @@ class Projects extends React.Component {
                     </Col>)
                 }
             </Row>
-        </Container>
+        </Container>: <Loading />
     }
 }
 

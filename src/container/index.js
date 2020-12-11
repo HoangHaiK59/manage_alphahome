@@ -15,6 +15,8 @@ import { authenticationService } from '../components/services';
 import { PrivateRoute } from '../components/router';
 import Login from '../components/users';
 import FormEditService from '../components/contents/service/form-edit';
+import FormEditProject from '../components/contents/projects/form-edit';
+import FormEditPost from '../components/contents/news/form-edit';
 class ContainerElement extends React.Component {
     constructor(props) {
         super(props);
@@ -24,7 +26,7 @@ class ContainerElement extends React.Component {
     }
 
     componentDidMount() {
-        authenticationService.currentUser.subscribe(x => {
+        this.subscription = authenticationService.currentUser.subscribe(x => {
             this.setState({currentUser: x})
         })
     }
@@ -32,6 +34,10 @@ class ContainerElement extends React.Component {
     logout() {
         authenticationService.logout();
         this.props.history.push('/login');
+    }
+
+    componentWillUnmount() {
+        this.subscription.unsubscribe();
     }
 
     render() {
@@ -50,8 +56,10 @@ class ContainerElement extends React.Component {
                                     <PrivateRoute exact path="/services/new-post" component={FormService} title="Add new post services" />
                                     <PrivateRoute exact path="/services/edit-post/:id" component={FormEditService} title="Edit service" />
                                     <PrivateRoute exact path="/projects/new-post" component={FormProject} title="Add new project" />
+                                    <PrivateRoute exact path="/projects/edit-post/:pId" component={FormEditProject} title="Edit project" />
                                     <PrivateRoute exact path="/news" component={News} title="Services" />
                                     <PrivateRoute exact path="/news/new-post" component= {FormPost} title="Add new post" />
+                                    <PrivateRoute exact path="/news/edit-post/:postId" component= {FormEditPost} title="Edit post" />
                                     <Route path='/login' component={Login} />
                             </Switch>
                         </main>

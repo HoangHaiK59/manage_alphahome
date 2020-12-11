@@ -20,6 +20,7 @@ export default class FormService extends React.Component {
             serviceTypes: []
         }
         this.editor = null;
+        this.baseUrl = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_DEV_BASE_URL: process.env.REACT_APP_API_DEV_BASE_URL;
     }
 
     escapeHTML(s) {
@@ -66,10 +67,11 @@ export default class FormService extends React.Component {
 
         let params = {...this.state, images: JSON.stringify(images), content };
         delete params.serviceTypes;
-        console.log(params);
         instance.post('Manager/SetService', params)
         .then(res => {
-            console.log(res.data);
+            if (res.data.success) {
+                this.props.history.push('/services');
+            }
         })
         .catch(error => console.log(error))
         //console.log(listCaption)
@@ -78,7 +80,7 @@ export default class FormService extends React.Component {
     }
 
     componentDidMount() {
-        authenticationService.currentUser.subscribe(x => {
+        this.subscription = authenticationService.currentUser.subscribe(x => {
             this.currentUser = x;
             if (this.currentUser) {
                 this.getServiceType();
@@ -88,6 +90,10 @@ export default class FormService extends React.Component {
         // imageElem.addEventListener('change', e => {
         //     console.log(e)
         // }, false)
+    }
+
+    componentWillUnmount() {
+        this.subscription.unsubscribe();
     }
 
     handleChange(key, e) {

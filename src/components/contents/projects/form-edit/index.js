@@ -6,11 +6,16 @@ import { instance } from '../../../../helper';
 import { uploadAdapterPlugin } from '../../../../helper';
 import { withRouter } from 'react-router-dom';
 import { authenticationService } from '../../../services';
+import * as queryString from 'querystring';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import '../../image.scss';
 
-class FormProject extends React.Component {
+class FormEditProject extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            id: 0,
             name: '',
             description: '',
             url: '',
@@ -30,10 +35,6 @@ class FormProject extends React.Component {
         };
         return s.replace( /[&"<>]/g, (c) => lookup[c] );
     }
-    
-    componentWillUnmount() {
-        this.subscription.unsubscribe();
-    }
 
     onSubmit() {
         const images = [];
@@ -49,7 +50,7 @@ class FormProject extends React.Component {
                 const listImage = gr.match(regexImage);
                 const listCaption = gr.match(regexCaption);
                 const image = {
-                    projectId: 0,
+                    projectId: this.state.id,
                     content: listCaption ? listCaption[0].match(regexGetTag)[0].replace(/^>+/g,'').replace(/<+$/g,''): '',
                     url: listImage ? listImage[0].split('"')[1].replace(/https:\/\/localhost:44352/g, ''): '',
                 }
@@ -69,9 +70,11 @@ class FormProject extends React.Component {
 
         let params = {...this.state, images: JSON.stringify(images), content };
         console.log(params);
-        instance.post('Manager/SetProject', params)
+        instance.post('Manager/UpdateProject', params)
         .then(res => {
-            console.log(res.data);
+            if (res.data.success) {
+                this.props.history.push('/projects');
+            }
         })
         .catch(error => console.log(error))
         //console.log(listCaption)
@@ -79,8 +82,38 @@ class FormProject extends React.Component {
         // console.log(viewToPlainText(this.editor.editing.view.document.getRoot()))
     }
 
+    getProjectById() {
+        const queryParams = queryString.stringify(this.props.match.params);
+        instance.get(`Manager/GetDetailProject?${queryParams}`).then(res => {
+            if(res.data.status === 'success') {
+                let dataRes = res.data.data;
+                let images = '';
+                for(const image of dataRes.images) {
+                    images += `<figure class="image"><img alt="" src="${image.url.indexOf('http') > -1 ? image.url: this.baseUrl + image.url}" /><figcaption>${image.content}</figcaption></figure>`
+                }
+                dataRes = {...dataRes, content: dataRes.content + images}
+                this.setState({
+                    id: dataRes.id,
+                    name: dataRes.name,
+                    description: dataRes.description,
+                    content: dataRes.content,
+                    url: dataRes.url,
+                    images: dataRes.images,
+                })
+                   
+            }
+        })
+    }
+
+    componentWillUnmount() {
+        this.subscription.unsubscribe();
+    }
+
     componentDidMount() {
-        this.subscription = authenticationService.currentUser.subscribe(x => this.currentUser = x);
+        this.subscription = authenticationService.currentUser.subscribe(x => {
+            this.currentUser = x;
+            this.getProjectById();
+        });
     }
 
     handleChange(key, e) {
@@ -137,19 +170,27 @@ class FormProject extends React.Component {
               <Form>
                 <div className="text-center">
                     <Form.Label>
-                        <h3>Thêm dự án</h3>
+                        <h3>Sửa dự án</h3>
                     </Form.Label>
                 </div>
                 <Form.Group>
                     <Form.Label>Tiêu đề</Form.Label>
-                    <Form.Control id="name" placeholder="Nhập tiêu đề" onChange={(event) => this.handleChange('iname', event)}/>
+                    <Form.Control id="name" placeholder="Nhập tiêu đề" defaultValue={this.state.name} onChange={(event) => this.handleChange('iname', event)}/>
                     {/* <Form.Text className="text-muted">
                     We'll never share your email with anyone else.
                     </Form.Text> */}
                     <Form.Label>Mô tả</Form.Label>
-                    <Form.Control id="description" as="textarea" placeholder="Nhập mô tả" multiple onChange={(event) => this.handleChange('idescription', event)}/>
+                    <Form.Control id="description" as="textarea" defaultValue={this.state.description}  placeholder="Nhập mô tả" multiple onChange={(event) => this.handleChange('idescription', event)}/>
                     <Form.Label>Ảnh cover</Form.Label>
-                    <Form.File id="cover" onChange={e => this.handleUpload(e)} accept="image/*"/>
+                    {
+                        this.state.url === '' ? <Form.File id="cover" onChange={e => this.handleUpload(e)} accept="image/*"/>
+                        : <div className="img-block">
+                        <img src={this.state.url.indexOf('http') > -1 ? this.state.url: this.baseUrl + this.state.url} alt="" />
+                        <div className="clr-btn">
+                            <Button variant="danger" onClick={() => this.clearCover()}><FontAwesomeIcon icon={faTimes} /></Button>
+                        </div>
+                    </div>
+                    }
                 </Form.Group>
 
                 <CKEditor controlId="formBasicEditor"
@@ -178,7 +219,14 @@ class FormProject extends React.Component {
 
                     // get image tag
                     for(let image of document.images) {
-                        image.src = image.src.replace(/http:\/\/localhost:3000/g, 'https://localhost:44352')
+                        if(image.src.indexOf('http') === -1) {
+                            // image.src = image.src.replace(/http:\/\/localhost:3000/g, 'https://localhost:44352')
+                        } else {
+                            if (image.src.indexOf('user') > -1) {
+                            } else {
+                                image.src = image.src.replace(/http:\/\/localhost:3000/g, 'https://localhost:44352')
+                            }
+                        }
                     }
                     this.setState({content: editor.getData()})
                 } }
@@ -199,4 +247,4 @@ class FormProject extends React.Component {
     }
 }
 
-export default withRouter(FormProject);
+export default withRouter(FormEditProject);

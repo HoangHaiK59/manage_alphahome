@@ -8,10 +8,14 @@ import { uploadAdapterPlugin } from '../../../../helper';
 import viewToPlainText from '@ckeditor/ckeditor5-clipboard/src/utils/viewtoplaintext';
 import { authenticationService } from '../../../services';
 import * as queryString from 'querystring';
+import '../../image.scss';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 export default class FormEditService extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            id: 0,
             name: '',
             description: '',
             url: '',
@@ -21,6 +25,7 @@ export default class FormEditService extends React.Component {
             serviceTypes: []
         }
         this.editor = null;
+        this.baseUrl = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_DEV_BASE_URL: process.env.REACT_APP_API_DEV_BASE_URL
     }
 
     escapeHTML(s) {
@@ -31,6 +36,10 @@ export default class FormEditService extends React.Component {
             '>': "&gt;"
         };
         return s.replace( /[&"<>]/g, (c) => lookup[c] );
+    }
+
+    clearCover() {
+        this.setState({url: ''});
     }
 
     onSubmit() {
@@ -47,7 +56,7 @@ export default class FormEditService extends React.Component {
                 const listImage = gr.match(regexImage);
                 const listCaption = gr.match(regexCaption);
                 const image = {
-                    serviceId: 0,
+                    serviceId: this.state.id,
                     content: listCaption ? listCaption[0].match(regexGetTag)[0].replace(/^>+/g,'').replace(/<+$/g,''): '',
                     url: listImage ? listImage[0].split('"')[1].replace(/https:\/\/localhost:44352/g, ''): '',
                     serviceTypeId: this.state.serviceTypeId
@@ -67,10 +76,11 @@ export default class FormEditService extends React.Component {
 
         let params = {...this.state, images: JSON.stringify(images), content };
         delete params.serviceTypes;
-        console.log(params);
-        instance.post('Manager/SetService', params)
+        instance.post('Manager/UpdateService', params)
         .then(res => {
-            console.log(res.data);
+            if (res.data.success) {
+                this.props.history.push('/services');
+            }
         })
         .catch(error => console.log(error))
         //console.log(listCaption)
@@ -79,7 +89,7 @@ export default class FormEditService extends React.Component {
     }
 
     componentDidMount() {
-        authenticationService.currentUser.subscribe(x => {
+        this.subscription = authenticationService.currentUser.subscribe(x => {
             this.currentUser = x;
             if (this.currentUser) {
                 this.getServiceById();
@@ -108,14 +118,20 @@ export default class FormEditService extends React.Component {
         instance.get(`Manager/GetServiceById?${queryParams}`).then(res => {
             if(res.data.status === 'success') {
                 let dataRes = res.data.data;
+                let images = '';
+                for(const image of dataRes.images) {
+                    images += `<figure class="image"><img alt="" src="${image.url.indexOf('http') > -1 ? image.url: this.baseUrl + image.url}" /><figcaption>${image.content}</figcaption></figure>`
+                }
+                dataRes = {...dataRes, content: dataRes.content + images}
                 instance.get('Manager/GetServiceType').then(result => {
                     if(result.data.status === 'success') {
                         const { data } = result.data;
                         this.setState({
                             serviceTypes: data,
+                            id: dataRes.id,
                             name: dataRes.name,
                             description: dataRes.description,
-                            content: `<p>${dataRes.content}</p>`,
+                            content: dataRes.content,
                             url: dataRes.url,
                             images: dataRes.images,
                             serviceTypeId: dataRes.serviceTypeId
@@ -163,6 +179,10 @@ export default class FormEditService extends React.Component {
         })
     }
 
+    componentWillUnmount() {
+        this.subscription.unsubscribe();
+    }
+
     // shouldComponentUpdate(prevProps, prevState) {
     //     if(prevState.content !== this.state.content) {
     //         return false;
@@ -188,13 +208,23 @@ export default class FormEditService extends React.Component {
                     <Form.Label>Mô tả</Form.Label>
                     <Form.Control id="description" as="textarea" defaultValue={this.state.description}  placeholder="Nhập mô tả" multiple onChange={(event) => this.handleChange('description', event)}/>
                     <Form.Label>Loại dịch vụ</Form.Label>
-                    <Form.Control id="serviceType" as="select" defaultValue={this.state.serviceTypeId}  placeholder="Chọn loại dịch vụ" onChange={(event) => this.handleChange('serviceType', event)} >
+                    <Form.Control id="serviceType" as="select" value={this.state.serviceTypeId}  placeholder="Chọn loại dịch vụ" onChange={(event) => this.handleChange('serviceType', event)} >
                         {
                             this.state.serviceTypes.map((s, id) => <option key={id} value={s?.uid}>{s?.name}</option>)
                         }
                     </Form.Control>
+                    {/* <Form.Label>Ảnh cover</Form.Label>
+                    <Form.File id="cover" onChange={e => this.handleUpload(e)} accept="image/*"/> */}
                     <Form.Label>Ảnh cover</Form.Label>
-                    <Form.File id="cover" onChange={e => this.handleUpload(e)} accept="image/*"/>
+                    {
+                        this.state.url === '' ? <Form.File id="cover" onChange={e => this.handleUpload(e)} accept="image/*"/>
+                        : <div className="img-block">
+                        <img src={this.state.url.indexOf('http') > -1 ? this.state.url: this.baseUrl + this.state.url} alt="" />
+                        <div className="clr-btn">
+                            <Button variant="danger" onClick={() => this.clearCover()}><FontAwesomeIcon icon={faTimes} /></Button>
+                        </div>
+                    </div>
+                    }
                 </Form.Group>
 
                 <CKEditor controlId="formBasicEditor"
@@ -208,6 +238,7 @@ export default class FormEditService extends React.Component {
                     this.editor = editor;
                     console.log( 'Editor is ready to use!', editor );
                 } }
+                on
                 onChange={ ( event, editor ) => {
                     // const data = editor.getData();
                     // console.log(viewToPlainText(editor.editing.view.document.getRoot()))
@@ -223,7 +254,14 @@ export default class FormEditService extends React.Component {
 
                     // get image tag
                     for(let image of document.images) {
-                        image.src = image.src.replace(/http:\/\/localhost:3000/g, 'https://localhost:44352')
+                        if(image.src.indexOf('http') === -1) {
+                            // image.src = image.src.replace(/http:\/\/localhost:3000/g, 'https://localhost:44352')
+                        } else {
+                            if (image.src.indexOf('user') > -1) {
+                            } else {
+                                image.src = image.src.replace(/http:\/\/localhost:3000/g, 'https://localhost:44352')
+                            }
+                        }
                     }
                     this.setState({content: editor.getData()})
                 } }

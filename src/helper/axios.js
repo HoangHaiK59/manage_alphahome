@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { authenticationService } from '../components/services';
+const API_URL = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_DEV_URL: process.env.REACT_APP_API_DEV_URL;
 export const instance = axios.create({
-    baseURL: 'https://localhost:44352/api/',
+    baseURL: API_URL,
     timeout: 6000,
     headers: {'content-type': 'application/json'}
   });

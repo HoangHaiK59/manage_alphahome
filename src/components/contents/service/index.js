@@ -8,6 +8,7 @@ import { instance } from '../../../helper';
 import * as queryString from 'querystring';
 import '../custom.scss';
 import { authenticationService } from '../../services';
+import { Loading } from '../../loading';
 class Services extends React.Component {
     constructor(props) {
         super(props);
@@ -19,13 +20,18 @@ class Services extends React.Component {
     }
 
     componentDidMount() {
-        authenticationService.currentUser.subscribe(x => {
+        this.subscription = authenticationService.currentUser.subscribe(x => {
             this.currentUser = x;
             if (this.currentUser) {
                 this.getServices();
             }
         });
     }
+
+    componentWillUnmount() {
+        this.subscription.unsubscribe();
+    }
+
 
     addPost() {
         this.props.history.push('services/new-post')
@@ -54,7 +60,7 @@ class Services extends React.Component {
     }
 
     render() {
-        return <Container fluid>
+        return this.state.data ? <Container fluid>
             <Row style={{height: '50px'}}>
                 <Col md={3} sm={6}>
                     <Button variant="primary" onClick={this.addPost.bind(this)}>
@@ -118,7 +124,7 @@ class Services extends React.Component {
                     </Col>)
                 }
             </Row>
-        </Container>
+        </Container> : <Loading />
     }
 }
 
