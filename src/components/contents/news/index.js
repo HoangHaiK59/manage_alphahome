@@ -10,10 +10,10 @@ class News extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            offSet: 0,
-            pageSize: 20,
             data: []
         }
+        this.offSet = 0;
+        this.pageSize = 20;
     }
 
     componentDidMount() {
@@ -23,19 +23,17 @@ class News extends React.Component {
                 this.getPosts();
             }
         });
+        document.addEventListener('scroll', this.listener.bind(this))
     }
 
     componentWillUnmount() {
         this.subscription.unsubscribe();
+        document.removeEventListener('scroll', this.listener.bind(this))
     }
 
     getPosts() {
-        const queryParams = queryString.stringify({offSet: this.state.offSet, pageSize: this.state.pageSize});
-        instance.get(`Manager/GetPosts?${queryParams}`, {
-            headers: {
-                Authorization: `Bearer ` + this.currentUser.token
-            }
-        })
+        const queryParams = queryString.stringify({offSet: this.offSet, pageSize: this.pageSize});
+        instance.get(`Manager/GetPosts?${queryParams}`)
         .then(res => {
             if(res.data.status === 'success') {
                 const { data } = res.data;
@@ -46,9 +44,17 @@ class News extends React.Component {
                         d.url = 'https://localhost:44352' + d.url;
                     }
                 })
-                this.setState({data});
+                this.setState(state =>({data: state.data.concat(data)}));
             }
         })
+    }
+
+    listener = e => {
+        console.log(e)
+        if(window.innerHeight + window.scrollY === (document.body.scrollHeight - 150)) {
+            this.offSet += this.pageSize;
+            this.getPosts()
+        }
     }
 
     addPost() {

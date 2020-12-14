@@ -24,13 +24,14 @@ function login(email, password) {
         .then(handleResponse)
         .then(result => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
-            if (result.data) {
+            if (result.data && result.status === 'success') {
                 localStorage.setItem('currentUser', JSON.stringify(result.data));
                 // startRefreshTokenTimer();
                 currentUserSubject.next(result.data);
     
                 return result.data;
             }
+            return result.data
         });
 }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from "react-router";
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Card, Toast } from 'react-bootstrap';
 import { authenticationService } from '../services';
 import './user.scss';
 class Login extends React.Component {
@@ -8,6 +8,10 @@ class Login extends React.Component {
         super(props);
         this.refEmail = React.createRef(null);
         this.refPW = React.createRef(null);
+        this.state = {
+            showToast: false,
+        }
+        this.validated = false
     }
 
     componentDidMount() {
@@ -16,44 +20,69 @@ class Login extends React.Component {
         }
     }
     submit = (e) => {
+        const form = e.currentTarget;
+        this.validated = true;
+        if (!form.checkValidity()) {
+            e.stopPropagation();
+            this.validated = false;
+        }
         e.preventDefault();
         authenticationService.login(this.refEmail.current.value, this.refPW.current.value)
-        .then(user => {
-            this.props.history.push('/')
+        .then(result => {
+            if (result.userId) {
+                this.props.history.push('/');
+            } else {
+                // this.validated = false;
+            }
         })
         .catch()
     }
     render () {
         return (
-            <section id="cover-bg">
-                <div id="cover-caption">
-                    <div id="container" className="container">
-                        <div className="row">
-                            <div className="col-sm-10 offset-sm-1 text-center">
-                                <h1 className="display-3 shadow">Welcome to Alphahome</h1>
-                                <div className="info-form" style={{padding: '0 20%'}}>
-                                    <Form onSubmit={(e) => this.submit(e)}>
-                                        <Form.Group controlId="formBasicEmail">
-                                            <Form.Control ref={this.refEmail}  type="email" placeholder="Enter email" />
-                                            <Form.Text className="text-muted">
-                                            We'll never share your email with anyone else.
-                                            </Form.Text>
-                                        </Form.Group>
+            <div className="position-relative">
+                <div style={{position: 'absolute', top: 0, right: '50%'}}>
+                    <Toast show={this.state.showToast}  delay={3000} autohide onClose={() => this.setState({showToast: false})}>
+                        <Toast.Header>
+                            <strong className="mr-auto">Đăng nhập</strong>
+                            <small>bây giờ</small>
+                        </Toast.Header>
+                        <Toast.Body>Không thành công</Toast.Body>
+                    </Toast>
+                </div>
+                <section id="cover-bg">
+                    <div id="cover-caption">
+                        <div id="container" className="container">
+                            <div className="row">
+                                <div className="col-sm-6 offset-sm-3 text-center">
+                                    <Card style={{paddingTop: '10px'}}>
+                                        <Card.Title><h3 style={{textTransform: 'uppercase'}}>Alphahome</h3></Card.Title>
+                                        <Card.Body>
+                                            <div className="info-form" style={{padding: '0 20%'}}>
+                                                <Form validated={this.validated}  onSubmit={(e) => this.submit(e)}>
+                                                    <Form.Group controlId="formBasicEmail">
+                                                        <Form.Control ref={this.refEmail} required  type="email" placeholder="Enter email" />
+                                                    </Form.Group>
 
-                                        <Form.Group controlId="formBasicPassword">
-                                            <Form.Control ref={this.refPW} type="password" placeholder="Password" />
-                                        </Form.Group>
-                                        <Button variant="primary" type="submit">
-                                            Submit
-                                        </Button>
-                                    </Form>
+                                                    <Form.Group controlId="formBasicPassword">
+                                                        <Form.Control ref={this.refPW} required type="password" placeholder="Password" />
+                                                    </Form.Group>
+
+                                                    <Form.Control.Feedback type="invalid">Email</Form.Control.Feedback>
+                                                    
+                                                    <Button variant="primary" type="submit">
+                                                        Submit
+                                                    </Button>
+                                                </Form>
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+                                    <br />
                                 </div>
-                                <br />
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            </div>
         )
     }
 }

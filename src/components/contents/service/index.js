@@ -13,10 +13,10 @@ class Services extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            offSet: 0,
-            pageSize: 20, 
             data: []
         }
+        this.offSet = 0;
+        this.pageSize = 20; 
     }
 
     componentDidMount() {
@@ -26,10 +26,20 @@ class Services extends React.Component {
                 this.getServices();
             }
         });
+        document.addEventListener('scroll', this.listener.bind(this))
+    }
+
+    listener = e => {
+        console.log(e)
+        if(window.innerHeight + window.scrollY === (document.body.scrollHeight - 150)) {
+            this.offSet += this.pageSize;
+            this.getServices()
+        }
     }
 
     componentWillUnmount() {
         this.subscription.unsubscribe();
+        document.removeEventListener('scroll', this.listener.bind(this))
     }
 
 
@@ -42,8 +52,7 @@ class Services extends React.Component {
     }
 
     getServices() {
-        const { offSet, pageSize } = this.state;
-        const queryParams = queryString.stringify({offSet, pageSize});
+        const queryParams = queryString.stringify({offSet: this.offSet, pageSize: this.pageSize});
         instance.get(`Manager/GetServices?${queryParams}`).then(res => {
             const result = res.data;
             if(result.status === 'success') {
@@ -54,7 +63,7 @@ class Services extends React.Component {
                         d.url = 'https://localhost:44352' + d.url;
                     }
                 })
-                this.setState({data: result.data})
+                this.setState(state =>({data: state.data.concat(result.data)}));
             }
         })
     }
