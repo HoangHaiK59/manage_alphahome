@@ -178,7 +178,7 @@ class FormProject extends React.Component {
 
                     // get image tag
                     for(let image of document.images) {
-                        image.src = image.src.replace(/http:\/\/localhost:3000/g, 'https://localhost:44352')
+                        image.src = image.src.replace(/http:\/\/localhost:3000/g, this.baseUrl)
                     }
                     this.setState({content: editor.getData()})
                 } }

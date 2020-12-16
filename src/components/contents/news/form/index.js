@@ -17,6 +17,7 @@ export default class FormPost extends React.Component {
             content: '',
         }
         this.editor = null;
+        this.baseUrl = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_DEV_BASE_URL: process.env.REACT_APP_API_DEV_BASE_URL;
     }
 
     handleUpload(e) {
@@ -140,7 +141,7 @@ export default class FormPost extends React.Component {
                     const data = editor.getData();
                     console.log( { event, editor, data } );
                     for(let image of document.images) {
-                        image.src = image.src.replace(/http:\/\/localhost:3000/g, 'https://localhost:44352')
+                        image.src = image.src.replace(/http:\/\/localhost:3000/g, this.baseUrl)
                     }
                     this.setState({content: data})
                 } }

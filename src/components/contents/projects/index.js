@@ -16,7 +16,8 @@ class Projects extends React.Component {
             data: []
         }
         this.offSet = 0;
-        this.pageSize = 20; 
+        this.pageSize = 20;
+        this.baseUrl = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_DEV_BASE_URL: process.env.REACT_APP_API_DEV_BASE_URL;
     }
 
     componentDidMount() {
@@ -59,7 +60,7 @@ class Projects extends React.Component {
                     if(r.url.indexOf('http') > -1) {
 
                     } else {
-                        r.url = 'https://localhost:44352' + r.url;
+                        r.url = this.baseUrl + r.url;
                     }
                 })
                 this.setState(state =>({data: state.data.concat(result.data)}));

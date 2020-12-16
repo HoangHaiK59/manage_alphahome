@@ -16,7 +16,8 @@ class Services extends React.Component {
             data: []
         }
         this.offSet = 0;
-        this.pageSize = 20; 
+        this.pageSize = 20;
+        this.baseUrl = process.env.NODE_ENV === 'development' ? process.env.REACT_APP_API_DEV_BASE_URL: process.env.REACT_APP_API_DEV_BASE_URL;
     }
 
     componentDidMount() {
@@ -60,7 +61,7 @@ class Services extends React.Component {
                     if(d.url.indexOf('http') > -1) {
 
                     } else {
-                        d.url = 'https://localhost:44352' + d.url;
+                        d.url = this.baseUrl + d.url;
                     }
                 })
                 this.setState(state =>({data: state.data.concat(result.data)}));

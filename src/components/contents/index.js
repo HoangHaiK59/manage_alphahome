@@ -23,6 +23,14 @@ class Content extends React.Component {
                 this.getManagerPage();
             }
         });
+        this.getTotalGoals('Barcelona', 2011)
+    }
+
+    getTotalGoals(team, year) {
+        instance.get(`https://jsonmock.hackerrank.com/api/football_matches?team1=${team}&year=${year}&page=1`)
+        .then(response => {
+            console.log(response)
+        })
     }
 
     getManagerPage() {

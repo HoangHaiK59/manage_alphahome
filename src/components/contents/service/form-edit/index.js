@@ -259,7 +259,7 @@ export default class FormEditService extends React.Component {
                         } else {
                             if (image.src.indexOf('user') > -1) {
                             } else {
-                                image.src = image.src.replace(/http:\/\/localhost:3000/g, 'https://localhost:44352')
+                                image.src = image.src.replace(/http:\/\/localhost:3000/g, this.baseUrl)
                             }
                         }
                     }
