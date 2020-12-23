@@ -12,7 +12,8 @@ class Content extends React.Component {
         this.state = {
             offSet: 0,
             pageSize: 20,
-            data: null
+            data: null,
+            loading: true
         }
     }
 
@@ -23,6 +24,10 @@ class Content extends React.Component {
                 this.getManagerPage();
             }
         });
+    }
+
+    hideLoading() {
+        this.setState({loading: false});
     }
 
     getManagerPage() {
@@ -157,7 +162,7 @@ class Content extends React.Component {
 
                 </Row>
             </div>
-        </Container>: <Loading/>
+        </Container>: <Loading done={this.state.data ? true: false} hideLoading={this.hideLoading.bind(this)}/>
     }
 }
 

@@ -60,11 +60,11 @@ class Login extends React.Component {
                                             <div className="info-form" style={{padding: '0 20%'}}>
                                                 <Form validated={this.validated}  onSubmit={(e) => this.submit(e)}>
                                                     <Form.Group controlId="formBasicEmail">
-                                                        <Form.Control ref={this.refEmail} required  type="email" placeholder="Enter email" />
+                                                        <Form.Control ref={this.refEmail} required type="email" placeholder="Enter email" />
                                                     </Form.Group>
 
                                                     <Form.Group controlId="formBasicPassword">
-                                                        <Form.Control ref={this.refPW} required type="password" placeholder="Password" />
+                                                        <Form.Control ref={this.refPW} required type="password" autoComplete="off" placeholder="Password" />
                                                     </Form.Group>
 
                                                     <Form.Control.Feedback type="invalid">Email</Form.Control.Feedback>
