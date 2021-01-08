@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHome, faNewspaper, faUser, faPager } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faNewspaper, faUser, faPager, faAd } from '@fortawesome/free-solid-svg-icons';
 import '../../sidebar.scss';
 import { Link } from 'react-router-dom'
 import './sidebar.scss';
@@ -70,6 +70,9 @@ class SidebarElement extends React.Component {
                         </li>
                         <li className="nav-item">
                             <Link className='nav-link' onClick={e => this.clickLink(e)} to="/news"><FontAwesomeIcon className="mr-2" icon={faNewspaper} />Tin tức</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className='nav-link' onClick={e => this.clickLink(e)} to="/ads"><FontAwesomeIcon className="mr-2" icon={faAd} />Quảng cáo</Link>
                         </li>
                     </ul>
                 </div>

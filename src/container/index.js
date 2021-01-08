@@ -17,6 +17,7 @@ import Login from '../components/users';
 import FormEditService from '../components/contents/service/form-edit';
 import FormEditProject from '../components/contents/projects/form-edit';
 import FormEditPost from '../components/contents/news/form-edit';
+import Ads from '../components/ads';
 class ContainerElement extends React.Component {
     constructor(props) {
         super(props);
@@ -60,6 +61,7 @@ class ContainerElement extends React.Component {
                                     <PrivateRoute exact path="/news" component={News} title="Services" />
                                     <PrivateRoute exact path="/news/new-post" component= {FormPost} title="Add new post" />
                                     <PrivateRoute exact path="/news/edit-post/:postId" component= {FormEditPost} title="Edit post" />
+                                    <PrivateRoute exact path="/ads" component={Ads} title="Ads" />
                                     <Route path='/login' component={Login} />
                             </Switch>
                         </main>

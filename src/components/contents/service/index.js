@@ -31,7 +31,6 @@ class Services extends React.Component {
     }
 
     listener = e => {
-        console.log(e)
         if(window.innerHeight + window.scrollY === (document.body.scrollHeight - 150)) {
             this.offSet += this.pageSize;
             this.getServices()
