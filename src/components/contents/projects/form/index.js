@@ -5,7 +5,6 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { instance } from '../../../../helper';
 import { uploadAdapterPlugin } from '../../../../helper';
 import { withRouter } from 'react-router-dom';
-import { authenticationService } from '../../../services';
 
 class FormProject extends React.Component {
     constructor(props) {
@@ -32,7 +31,6 @@ class FormProject extends React.Component {
     }
     
     componentWillUnmount() {
-        this.subscription.unsubscribe();
     }
 
     onSubmit() {
@@ -80,7 +78,6 @@ class FormProject extends React.Component {
     }
 
     componentDidMount() {
-        this.subscription = authenticationService.currentUser.subscribe(x => this.currentUser = x);
     }
 
     handleChange(key, e) {

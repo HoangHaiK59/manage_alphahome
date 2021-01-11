@@ -4,7 +4,6 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import * as queryString from 'querystring';
-import { authenticationService } from '../../services';
 import { Loading } from '../../loading';
 class News extends React.Component {
     constructor(props) {
@@ -18,17 +17,10 @@ class News extends React.Component {
     }
 
     componentDidMount() {
-        this.subscription = authenticationService.currentUser.subscribe(x => {
-            this.currentUser = x;
-            if (this.currentUser) {
-                this.getPosts();
-            }
-        });
         document.addEventListener('scroll', this.listener.bind(this))
     }
 
     componentWillUnmount() {
-        this.subscription.unsubscribe();
         document.removeEventListener('scroll', this.listener.bind(this))
     }
 

@@ -1,6 +1,5 @@
 import React from 'react';
-import { authenticationService } from '../services';
-import { Row, Col, Container, Button, Modal, Form, Toast } from 'react-bootstrap';
+import { Row, Col, Container, Button, Modal, Form } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome' 
 import { faEdit, faUpload, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { instance } from '../../helper';
@@ -20,12 +19,7 @@ export default class Ads extends React.PureComponent {
     }
 
     componentDidMount() {
-        this.subscription = authenticationService.currentUser.subscribe(x => {
-            this.currentUser = x;
-            if (this.currentUser) {
-                this.getAdsVideo();
-            }
-        });
+        this.getAdsVideo();
     }
 
     upload() {

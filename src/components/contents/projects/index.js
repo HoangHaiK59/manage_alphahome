@@ -7,7 +7,6 @@ import { withRouter } from 'react-router';
 import { instance } from '../../../helper';
 import * as queryString from 'querystring';
 import '../custom.scss';
-import { authenticationService } from '../../services';
 import { Loading } from '../../loading';
 class Projects extends React.Component {
     constructor(props) {
@@ -21,12 +20,6 @@ class Projects extends React.Component {
     }
 
     componentDidMount() {
-        this.subscription = authenticationService.currentUser.subscribe(x => {
-            this.currentUser = x;
-            if (this.currentUser) {
-                this.getProjects();
-            }
-        });
         document.addEventListener('scroll', this.listener.bind(this));
     }
 
@@ -39,7 +32,6 @@ class Projects extends React.Component {
     }
 
     componentWillUnmount() {
-        this.subscription.unsubscribe();
         document.removeEventListener('scroll', this.listener.bind(this));
     }
 

@@ -5,7 +5,6 @@ import { Container } from 'react-bootstrap';
 import { Form, Button } from 'react-bootstrap';
 import { uploadAdapterPlugin } from '../../../../helper';
 import { instance } from '../../../../helper';
-import { authenticationService } from '../../../services';
 export default class FormPost extends React.Component {
     constructor(props) {
         super(props);
@@ -102,11 +101,11 @@ export default class FormPost extends React.Component {
     }
 
     componentWillUnmount() {
-        this.subscription.unsubscribe();
+        //this.subscription.unsubscribe();
     }
 
     componentDidMount() {
-        this.subscription = authenticationService.currentUser.subscribe(x => this.currentUser = x);
+        //this.subscription = authenticationService.currentUser.subscribe(x => this.currentUser = x);
     }
 
     render() {

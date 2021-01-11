@@ -6,7 +6,6 @@ import { Form, Button } from 'react-bootstrap';
 import { instance } from '../../../../helper';
 import { uploadAdapterPlugin } from '../../../../helper';
 import viewToPlainText from '@ckeditor/ckeditor5-clipboard/src/utils/viewtoplaintext';
-import { authenticationService } from '../../../services';
 export default class FormService extends React.Component {
     constructor(props) {
         super(props);
@@ -80,12 +79,7 @@ export default class FormService extends React.Component {
     }
 
     componentDidMount() {
-        this.subscription = authenticationService.currentUser.subscribe(x => {
-            this.currentUser = x;
-            if (this.currentUser) {
-                this.getServiceType();
-            }
-        });
+        this.getServiceType();
         // const imageElem = document.getElementById("cover");
         // imageElem.addEventListener('change', e => {
         //     console.log(e)
@@ -93,7 +87,6 @@ export default class FormService extends React.Component {
     }
 
     componentWillUnmount() {
-        this.subscription.unsubscribe();
     }
 
     handleChange(key, e) {

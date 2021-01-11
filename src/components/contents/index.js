@@ -4,7 +4,6 @@ import { instance } from '../../helper';
 import * as queryString from 'querystring';
 import { Row, Col } from 'react-bootstrap';
 import './content.scss';
-import { authenticationService } from '../services';
 import { Loading } from '../loading';
 class Content extends React.Component {
     constructor(props) {
@@ -18,12 +17,7 @@ class Content extends React.Component {
     }
 
     componentDidMount() {
-        authenticationService.currentUser.subscribe(x => {
-            this.currentUser = x;
-            if (this.currentUser) {
-                this.getManagerPage();
-            }
-        });
+        this.getManagerPage();
     }
 
     hideLoading() {

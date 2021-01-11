@@ -5,7 +5,6 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { instance } from '../../../../helper';
 import { uploadAdapterPlugin } from '../../../../helper';
 import { withRouter } from 'react-router-dom';
-import { authenticationService } from '../../../services';
 import * as queryString from 'querystring';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -106,14 +105,9 @@ class FormEditPost extends React.Component {
     }
 
     componentWillUnmount() {
-        this.subscription.unsubscribe();
     }
 
     componentDidMount() {
-        this.subscription = authenticationService.currentUser.subscribe(x => {
-            this.currentUser = x;
-            this.getPostById();
-        });
     }
 
     handleChange(key, e) {

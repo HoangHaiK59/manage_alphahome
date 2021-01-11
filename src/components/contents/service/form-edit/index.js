@@ -6,7 +6,6 @@ import { Form, Button } from 'react-bootstrap';
 import { instance } from '../../../../helper';
 import { uploadAdapterPlugin } from '../../../../helper';
 import viewToPlainText from '@ckeditor/ckeditor5-clipboard/src/utils/viewtoplaintext';
-import { authenticationService } from '../../../services';
 import * as queryString from 'querystring';
 import '../../image.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -89,12 +88,7 @@ export default class FormEditService extends React.Component {
     }
 
     componentDidMount() {
-        this.subscription = authenticationService.currentUser.subscribe(x => {
-            this.currentUser = x;
-            if (this.currentUser) {
-                this.getServiceById();
-            }
-        });
+        this.getServiceById();
         // const imageElem = document.getElementById("cover");
         // imageElem.addEventListener('change', e => {
         //     console.log(e)
@@ -180,7 +174,6 @@ export default class FormEditService extends React.Component {
     }
 
     componentWillUnmount() {
-        this.subscription.unsubscribe();
     }
 
     // shouldComponentUpdate(prevProps, prevState) {
