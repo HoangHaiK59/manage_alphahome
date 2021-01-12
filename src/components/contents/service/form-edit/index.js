@@ -95,16 +95,8 @@ export default class FormEditService extends React.Component {
         // }, false)
     }
 
-    handleChange(key, e) {
-        if(key === 'name') {
-            this.setState({name: e.target.value})
-        } else if(key === 'description') {
-            this.setState({description: e.target.value})
-        } else if(key === 'url') {
-            this.setState({url: e.target.value})
-        } else if(key === 'serviceType') {
-            this.setState({serviceTypeId: e.target.value})
-        }
+    handleChange(e) {
+        this.setState({[e.target.id]: e.target.value})
     }
 
     getServiceById() {
@@ -194,14 +186,14 @@ export default class FormEditService extends React.Component {
                 </div>
                 <Form.Group>
                     <Form.Label>Tiêu đề</Form.Label>
-                    <Form.Control id="name" placeholder="Nhập tiêu đề" defaultValue={this.state.name} onChange={(event) => this.handleChange('name', event)}/>
+                    <Form.Control id="name" placeholder="Nhập tiêu đề" defaultValue={this.state.name} onChange={(event) => this.handleChange(event)}/>
                     {/* <Form.Text className="text-muted">
                     We'll never share your email with anyone else.
                     </Form.Text> */}
                     <Form.Label>Mô tả</Form.Label>
-                    <Form.Control id="description" as="textarea" defaultValue={this.state.description}  placeholder="Nhập mô tả" multiple onChange={(event) => this.handleChange('description', event)}/>
+                    <Form.Control id="description" as="textarea" defaultValue={this.state.description}  placeholder="Nhập mô tả" multiple onChange={(event) => this.handleChange(event)}/>
                     <Form.Label>Loại dịch vụ</Form.Label>
-                    <Form.Control id="serviceType" as="select" value={this.state.serviceTypeId}  placeholder="Chọn loại dịch vụ" onChange={(event) => this.handleChange('serviceType', event)} >
+                    <Form.Control id="serviceTypeId" as="select" value={this.state.serviceTypeId}  placeholder="Chọn loại dịch vụ" onChange={(event) => this.handleChange(event)} >
                         {
                             this.state.serviceTypes.map((s, id) => <option key={id} value={s?.uid}>{s?.name}</option>)
                         }

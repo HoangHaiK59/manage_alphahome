@@ -20,6 +20,7 @@ class Projects extends React.Component {
     }
 
     componentDidMount() {
+        this.getProjects();
         document.addEventListener('scroll', this.listener.bind(this));
     }
 

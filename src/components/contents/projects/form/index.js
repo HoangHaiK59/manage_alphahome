@@ -80,14 +80,8 @@ class FormProject extends React.Component {
     componentDidMount() {
     }
 
-    handleChange(key, e) {
-        if(key === 'name') {
-            this.setState({name: e.target.value})
-        } else if(key === 'description') {
-            this.setState({description: e.target.value})
-        } else if(key === 'url') {
-            this.setState({url: e.target.value})
-        }
+    handleChange(e) {
+        this.setState({[e.target.id]: e.target.value})
     }
 
     handleUpload(e) {
@@ -139,12 +133,12 @@ class FormProject extends React.Component {
                 </div>
                 <Form.Group>
                     <Form.Label>Tiêu đề</Form.Label>
-                    <Form.Control id="name" placeholder="Nhập tiêu đề" onChange={(event) => this.handleChange('iname', event)}/>
+                    <Form.Control id="name" placeholder="Nhập tiêu đề" onChange={(event) => this.handleChange(event)}/>
                     {/* <Form.Text className="text-muted">
                     We'll never share your email with anyone else.
                     </Form.Text> */}
                     <Form.Label>Mô tả</Form.Label>
-                    <Form.Control id="description" as="textarea" placeholder="Nhập mô tả" multiple onChange={(event) => this.handleChange('idescription', event)}/>
+                    <Form.Control id="description" as="textarea" placeholder="Nhập mô tả" multiple onChange={(event) => this.handleChange(event)}/>
                     <Form.Label>Ảnh cover</Form.Label>
                     <Form.File id="cover" onChange={e => this.handleUpload(e)} accept="image/*"/>
                 </Form.Group>

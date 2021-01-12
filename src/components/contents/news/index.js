@@ -17,6 +17,7 @@ class News extends React.Component {
     }
 
     componentDidMount() {
+        this.getPosts();
         document.addEventListener('scroll', this.listener.bind(this))
     }
 

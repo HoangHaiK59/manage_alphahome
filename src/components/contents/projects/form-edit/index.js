@@ -110,14 +110,8 @@ class FormEditProject extends React.Component {
     componentDidMount() {
     }
 
-    handleChange(key, e) {
-        if(key === 'name') {
-            this.setState({name: e.target.value})
-        } else if(key === 'description') {
-            this.setState({description: e.target.value})
-        } else if(key === 'url') {
-            this.setState({url: e.target.value})
-        }
+    handleChange(e) {
+        this.setState({[e.target.id]: e.target.value})
     }
 
     handleUpload(e) {
@@ -174,7 +168,7 @@ class FormEditProject extends React.Component {
                     We'll never share your email with anyone else.
                     </Form.Text> */}
                     <Form.Label>Mô tả</Form.Label>
-                    <Form.Control id="description" as="textarea" defaultValue={this.state.description}  placeholder="Nhập mô tả" multiple onChange={(event) => this.handleChange('idescription', event)}/>
+                    <Form.Control id="description" as="textarea" defaultValue={this.state.description}  placeholder="Nhập mô tả" multiple onChange={(event) => this.handleChange(event)}/>
                     <Form.Label>Ảnh cover</Form.Label>
                     {
                         this.state.url === '' ? <Form.File id="cover" onChange={e => this.handleUpload(e)} accept="image/*"/>

@@ -90,14 +90,8 @@ export default class FormPost extends React.Component {
         // console.log(viewToPlainText(this.editor.editing.view.document.getRoot()))
     }
 
-    handleChange(key, e) {
-        if(key === 'name') {
-            this.setState({name: e.target.value})
-        } else if(key === 'description') {
-            this.setState({description: e.target.value})
-        } else if(key === 'url') {
-            this.setState({url: e.target.value})
-        }
+    handleChange(e) {
+        this.setState({[e.target.id]: e.target.value})
     }
 
     componentWillUnmount() {
@@ -119,7 +113,7 @@ export default class FormPost extends React.Component {
                 </div>
                 <Form.Group controlId="formBasicEmail">
                     <Form.Label>Tiêu đề</Form.Label>
-                    <Form.Control placeholder="Nhập tiêu đề" onChange={(event) => this.handleChange('name', event)}/>
+                    <Form.Control placeholder="Nhập tiêu đề" id="name" onChange={(event) => this.handleChange(event)}/>
                     {/* <Form.Text className="text-muted">
                     We'll never share your email with anyone else.
                     </Form.Text> */}
