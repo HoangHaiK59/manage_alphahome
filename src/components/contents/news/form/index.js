@@ -95,11 +95,13 @@ export default class FormPost extends React.Component {
     }
 
     componentWillUnmount() {
-        //this.subscription.unsubscribe();
+        this.subscription.unsubscribe();
     }
 
     componentDidMount() {
-        //this.subscription = authenticationService.currentUser.subscribe(x => this.currentUser = x);
+        this.subscription = this.props.userContext.currentUser.subscribe( x =>
+            this.props.updateContextValue({...this.props.userContext, currentUserValue: x})
+        );
     }
 
     render() {

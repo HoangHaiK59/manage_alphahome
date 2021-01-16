@@ -19,7 +19,10 @@ export default class Ads extends React.PureComponent {
     }
 
     componentDidMount() {
-        this.getAdsVideo();
+        this.subscription = this.props.userContext.currentUser.subscribe( x => {
+            this.props.updateContextValue({...this.props.userContext, currentUserValue: x});
+            this.getAdsVideo();
+        });
     }
 
     upload() {
@@ -122,6 +125,10 @@ export default class Ads extends React.PureComponent {
 
     rangeArrray(start, end) {
         return Array(end - start + 1).fill(v => v).map((_, idx) => start + idx);
+    }
+
+    componentWillUnmount() {
+        this.subscription.unsubscribe();
     }
 
     save() {

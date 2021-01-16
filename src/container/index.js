@@ -46,27 +46,27 @@ class ContainerElement extends React.Component {
         // const { currentUser } = this.state;
         return (
             <UserContext.Consumer>
-                { value => {
+                { context => {
                     return (
                         <Container fluid style={{minHeight: '100vh', paddingLeft:0 , paddingRight: 0}}>
-                        <NavbarElement currentUser={value.currentUserValue}/>
+                        <NavbarElement {...context}/>
                         <Container fluid className="main">
                             <Row>
-                                <SidebarElement currentUser={value.currentUserValue} logout={this.logout.bind(this)}/>
-                                <main className={value.currentUserValue ? "col-md-10 col-lg-10 px-1 ml-sm-auto": "col-md-12 col-lg-12 p-0"}>
+                                <SidebarElement {...context} logout={this.logout.bind(this)}/>
+                                <main className={context.userContext.currentUserValue ? "col-md-10 col-lg-10 px-1 ml-sm-auto": "col-md-12 col-lg-12 p-0"}>
                                     <Switch>
-                                            <PrivateRoute exact path="/" component={Content} title="Home" />
-                                            <PrivateRoute exact path="/services" component={Services} title="Services" />
-                                            <PrivateRoute exact path="/projects" component={Projects} title="Projects" />
-                                            <PrivateRoute exact path="/services/new-post" component={FormService} title="Add new post services" />
-                                            <PrivateRoute exact path="/services/edit-post/:id" component={FormEditService} title="Edit service" />
-                                            <PrivateRoute exact path="/projects/new-post" component={FormProject} title="Add new project" />
-                                            <PrivateRoute exact path="/projects/edit-post/:pId" component={FormEditProject} title="Edit project" />
-                                            <PrivateRoute exact path="/news" component={News} title="Services" />
-                                            <PrivateRoute exact path="/news/new-post" component= {FormPost} title="Add new post" />
-                                            <PrivateRoute exact path="/news/edit-post/:postId" component= {FormEditPost} title="Edit post" />
-                                            <PrivateRoute exact path="/ads" component={Ads} title="Ads" />
-                                            <Route path='/login' component={Login} />
+                                            <PrivateRoute exact path="/" component={Content} {...context} title="Home" />
+                                            <PrivateRoute exact path="/services" component={Services} {...context} title="Services" />
+                                            <PrivateRoute exact path="/projects" component={Projects} {...context} title="Projects" />
+                                            <PrivateRoute exact path="/services/new-post" component={FormService} {...context} title="Add new post services" />
+                                            <PrivateRoute exact path="/services/edit-post/:id" component={FormEditService} {...context} title="Edit service" />
+                                            <PrivateRoute exact path="/projects/new-post" component={FormProject} {...context} title="Add new project" />
+                                            <PrivateRoute exact path="/projects/edit-post/:pId" component={FormEditProject} {...context} title="Edit project" />
+                                            <PrivateRoute exact path="/news" component={News} {...context} title="Services" />
+                                            <PrivateRoute exact path="/news/new-post" component= {FormPost} {...context} title="Add new post" />
+                                            <PrivateRoute exact path="/news/edit-post/:postId" component= {FormEditPost} {...context} title="Edit post" />
+                                            <PrivateRoute exact path="/ads" component={Ads} {...context} title="Ads" />
+                                            <Route path='/login' component={Login} {...context}/>
                                     </Switch>
                                 </main>
                             </Row>

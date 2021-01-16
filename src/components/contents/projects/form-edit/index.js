@@ -105,9 +105,13 @@ class FormEditProject extends React.Component {
     }
 
     componentWillUnmount() {
+        this.subscription.unsubscribe();
     }
 
     componentDidMount() {
+        this.subscription = this.props.userContext.currentUser.subscribe( x => {
+            this.props.updateContextValue({...this.props.userContext, currentUserValue: x});
+        });
     }
 
     handleChange(e) {

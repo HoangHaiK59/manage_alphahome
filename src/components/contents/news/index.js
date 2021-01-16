@@ -17,11 +17,15 @@ class News extends React.Component {
     }
 
     componentDidMount() {
+        this.subscription = this.props.userContext.currentUser.subscribe( x => {
+            this.props.updateContextValue({...this.props.userContext, currentUserValue: x});
+        });
         this.getPosts();
         document.addEventListener('scroll', this.listener.bind(this))
     }
 
     componentWillUnmount() {
+        this.subscription.unsubscribe();
         document.removeEventListener('scroll', this.listener.bind(this))
     }
 
@@ -40,6 +44,8 @@ class News extends React.Component {
                 })
                 this.setState(state =>({data: state.data.concat(data)}));
             }
+        }).catch(error => {
+            
         })
     }
 

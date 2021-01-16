@@ -51,11 +51,11 @@ class SidebarElement extends React.Component {
 
     render() {
         return (
-            this.props.currentUser && <nav className="col-md-2 d-none d-md-block bg-28303b sidebar">
+            this.props.userContext ? <nav className="col-md-2 d-none d-md-block bg-28303b sidebar">
                 <div className="sidebar-sticky">
                     <header className="avatar">
                         <img alt="" src={process.env.PUBLIC_URL + '/user.jpg'} />
-                        <h4>{this.props.currentUser.firstName + ' ' + this.props.currentUser.lastName}</h4>
+                        <h4>{this.props.userContext.currentUserValue.firstName + ' ' + this.props.userContext.currentUserValue.lastName}</h4>
                         <button className="btn btn-link" onClick={this.props.logout}>Logout</button>
                     </header>
                     <ul className="nav flex-column">
@@ -76,7 +76,7 @@ class SidebarElement extends React.Component {
                         </li>
                     </ul>
                 </div>
-            </nav>
+            </nav>: null
         )
     }
 }

@@ -20,7 +20,10 @@ class Services extends React.Component {
     }
 
     componentDidMount() {
-        this.getServices();
+        this.subscription = this.props.userContext.currentUser.subscribe( x => {
+            this.props.updateContextValue({...this.props.userContext, currentUserValue: x});
+            this.getServices();
+        });
         document.addEventListener('scroll', this.listener.bind(this))
     }
 
@@ -32,6 +35,7 @@ class Services extends React.Component {
     }
 
     componentWillUnmount() {
+        this.subscription.unsubscribe();
         document.removeEventListener('scroll', this.listener.bind(this))
     }
 
@@ -58,6 +62,9 @@ class Services extends React.Component {
                 })
                 this.setState(state =>({data: state.data.concat(result.data)}));
             }
+        })
+        .catch(error => {
+
         })
     }
 

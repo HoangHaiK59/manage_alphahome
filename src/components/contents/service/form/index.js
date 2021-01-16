@@ -79,7 +79,10 @@ export default class FormService extends React.Component {
     }
 
     componentDidMount() {
-        this.getServiceType();
+        this.subscription = this.props.userContext.currentUser.subscribe( x => {
+            this.props.updateContextValue( {...this.props.userContext, currentUserValue: x});
+            this.getServiceType();
+        });
         // const imageElem = document.getElementById("cover");
         // imageElem.addEventListener('change', e => {
         //     console.log(e)
@@ -87,6 +90,7 @@ export default class FormService extends React.Component {
     }
 
     componentWillUnmount() {
+        this.subscription.unsubscribe();
     }
 
     handleChange(e) {

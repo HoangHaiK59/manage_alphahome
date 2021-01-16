@@ -5,17 +5,15 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router } from 'react-router-dom';
-import UserContext from './components/context/user-context';
-import { authenticationService } from './components/services';
+// import UserContext from './components/context/user-context';
+// import { authenticationService } from './components/services';
 require('dotenv').config();
 
 ReactDOM.render(
   <React.StrictMode>
-    <UserContext.Provider value={authenticationService}>
       <Router>
         <App />
       </Router>
-    </UserContext.Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

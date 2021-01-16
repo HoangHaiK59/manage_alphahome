@@ -30,7 +30,7 @@ class Login extends React.Component {
         authenticationService.login(this.refEmail.current.value, this.refPW.current.value)
         .then(result => {
             if (result.userId) {
-                this.props.history.push('/home');
+                this.props.history.push('/');
             } else {
                 // this.validated = false;
             }
