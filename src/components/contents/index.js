@@ -17,11 +17,18 @@ class Content extends React.Component {
     }
 
     componentDidMount() {
-        this.getManagerPage();
+        this.subscription = this.props.userContext.currentUser.subscribe( x => {
+            this.props.updateContextValue({...this.props.userContext, currentUserValue: x});
+            this.getManagerPage();
+        });
     }
 
     hideLoading() {
         this.setState({loading: false});
+    }
+
+    componentWillUnmount() {
+        this.subscription.unsubscribe();
     }
 
     getManagerPage() {

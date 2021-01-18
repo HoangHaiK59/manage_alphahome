@@ -19,8 +19,8 @@ class News extends React.Component {
     componentDidMount() {
         this.subscription = this.props.userContext.currentUser.subscribe( x => {
             this.props.updateContextValue({...this.props.userContext, currentUserValue: x});
+            this.getPosts();
         });
-        this.getPosts();
         document.addEventListener('scroll', this.listener.bind(this))
     }
 
