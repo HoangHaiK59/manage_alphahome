@@ -8,13 +8,21 @@
 .content {
     position: relative;
     width: 100%;
-    height: 100%;
+    height: 500px;
+    overflow: hidden;
 }
 
 .content > img {
     height: 500px;
     object-fit: cover;
     position: relative;
+}
+
+.content > img:hover {
+    transform: scale(1.1,1.1);
+    transform-origin: center center;
+    transition: transform 0.5s, opacity 0.5s;
+    cursor: pointer;
 }
 
 h5 {

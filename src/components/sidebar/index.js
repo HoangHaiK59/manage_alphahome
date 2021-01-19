@@ -51,7 +51,7 @@ class SidebarElement extends React.Component {
 
     render() {
         return (
-            this.props.userContext ? <nav className="col-md-2 d-none d-md-block bg-28303b sidebar">
+            this.props.userContext ? <nav className="col-md-2 d-none d-md-block bg-28303b sidebar shadow">
                 <div className="sidebar-sticky">
                     <header className="avatar">
                         <img alt="" src={process.env.PUBLIC_URL + '/user.jpg'} />
