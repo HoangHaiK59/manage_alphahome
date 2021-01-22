@@ -20,3 +20,7 @@ code {
 .bg-light {
   background-color: #fff !important;
 }
+
+.navbar {
+  padding: 0 1rem !important;
+}

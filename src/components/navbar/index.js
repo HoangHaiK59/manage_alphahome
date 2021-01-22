@@ -1,13 +1,13 @@
 import { Navbar, Nav } from 'react-bootstrap';
 const NavbarElement = (props) => {
     return (
-        props.userContext.currentUser ? <Navbar collapseOnSelect expand="sm" bg="light" variant="light" className="fixed-top p-0 shadow">
-            <Navbar.Brand href="#home" className="col-sm-2 col-md-2 col-2 mr-0">Alphahome</Navbar.Brand>
-            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        props.userContext.currentUser ? <Navbar collapseOnSelect expand bg="white" variant="light" fixed="top" className="shadow">
+            <Navbar.Brand href="#home"><img alt="" src={process.env.PUBLIC_URL + '/favicon.ico'} /></Navbar.Brand>
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" className="border-0"/>
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="mr-auto">
                 <Nav.Item style={{minWidth: '20rem'}}>
-                    <input className="form-control w-100" type="text" placeholder="Search" aria-label="search"/>
+                    <input className="form-control w-100 border-0" type="text" placeholder="Search" aria-label="search"/>
                 </Nav.Item>
                 {/* <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
                     <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
